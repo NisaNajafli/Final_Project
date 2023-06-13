@@ -11,8 +11,10 @@ namespace DataAccess.Entities
         public Department()
         {
             Designations = new HashSet<Designation>();
+            Employees = new HashSet<Employee>();
         }
         public string Name { get; set; }
         public ICollection<Designation> Designations { get; set; }
+        public ICollection<Employee> Employees { get; set; }
     }
 }

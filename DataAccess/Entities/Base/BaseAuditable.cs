@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Entities
 {
-    public class BaseAuditable
+    public class BaseAuditable:BaseEntity
     {
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

@@ -13,7 +13,8 @@ namespace DataAccess.Entities
         {
             Roles = new HashSet<Role>();
         }
-        public string FullName { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public ICollection<Role> Roles { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -12,12 +13,24 @@ namespace DataAccess.Entities
     {
         public Client()
         {
-            Companies = new HashSet<Company>();
+            Tasks=new HashSet<Task>();  
         }
-        public int Id { get; set; }
+        public enum Genders
+        {
+            Male,
+            Female
+        }
         public string ImageName { get; set; }
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Job { get; set; }
-        public ICollection<Company> Companies { get; set; }
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+        public Genders Gender { get; set; }
+        public DateTime Brithday { get; set; }
+        public string Address { get; set; }
+        public ICollection<Task> Tasks { get; set; }
+        [NotMapped]
+        public IFormFile Image { get; set; }
     }
 }

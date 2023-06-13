@@ -13,10 +13,11 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
-            builder.Property(c=>c.IsDeleted).HasDefaultValue(false);
-            builder.Property(c=>c.IsActive).HasDefaultValue(true);
-            builder.Property(c => c.FullName).HasMaxLength(40).IsRequired();
+            builder.Property(c => c.IsDeleted).HasDefaultValue(false);
+            builder.Property(c => c.IsActive).HasDefaultValue(true);
+            builder.HasMany(c => c.Tasks).WithOne(c => c.Client).HasForeignKey(c => c.ClientId).OnDelete(DeleteBehavior.Restrict);
         }
-
     }
+
 }
+
