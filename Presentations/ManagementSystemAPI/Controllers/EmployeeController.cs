@@ -73,7 +73,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200, _unitOfWork.EmployeeRepository.GetAll("Designation,Department,Company").ToList());
+                return StatusCode(200, await _unitOfWork.EmployeeRepository.GetAllAsync(null,"Designation","Department","Company"));
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Employee employee = _unitOfWork.EmployeeRepository.GetById(id);
+            Employee employee =await  _unitOfWork.EmployeeRepository.GetById(id);
             if (employee == null)
             {
                 return StatusCode(404);
@@ -99,6 +99,12 @@ namespace ManagementSystemAPI.Controllers
                 DesignationId = employeedto.DesignationId,
                 DepartmentId = employeedto.DepartmentId,
                 CompanyId = employeedto.CompanyId,
+                JoiningDate=employeedto.JoiningDate,
+                FirstName = employeedto.FirstName,
+                LastName = employeedto.LastName,
+                Email = employeedto.Email,
+                Password = employeedto.Password,
+                ConfirmPassword = employeedto.ConfirmPassword,
             };
             _unitOfWork.EmployeeRepository.Create(employee);
             await _unitOfWork.Commit();
@@ -107,7 +113,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee([FromRoute] int id)
         {
-            Employee employee = _unitOfWork.EmployeeRepository.GetById(id);
+            Employee employee =await _unitOfWork.EmployeeRepository.GetById(id);
             if (employee == null)
             {
                 return StatusCode(404);
@@ -119,7 +125,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateEmployee employeedto)
         {
-            Employee employee = _unitOfWork.EmployeeRepository.GetAll("Designation,Department,Company").FirstOrDefault(i=>i.Id==id);
+            Employee employee = _unitOfWork.EmployeeRepository.Get("Designation","Department","Company").FirstOrDefault(i=>i.Id==id);
             if (employee == null)
             {
                 return StatusCode(404);
@@ -128,6 +134,12 @@ namespace ManagementSystemAPI.Controllers
             employee.DepartmentId= employeedto.DepartmentId;
             employee.DesignationId= employeedto.DesignationId;
             employee.CompanyId= employeedto.CompanyId;
+            employee.LastName= employeedto.LastName;
+            employee.FirstName= employeedto.FirstName;
+            employee.Email= employeedto.Email;
+            employee.Password= employeedto.Password;
+            employee.ConfirmPassword= employeedto.ConfirmPassword;
+            employee.JoiningDate= employeedto.JoiningDate;
             _unitOfWork.EmployeeRepository.Update(employee, id);
             await _unitOfWork.Commit();
             return Ok(employee);

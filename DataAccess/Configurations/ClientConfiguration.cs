@@ -15,7 +15,7 @@ namespace DataAccess.Configurations
         {
             builder.Property(c => c.IsDeleted).HasDefaultValue(false);
             builder.Property(c => c.IsActive).HasDefaultValue(true);
-            builder.HasMany(c => c.Tasks).WithOne(c => c.Client).HasForeignKey(c => c.ClientId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.Tasks).WithMany(c => c.Clients);
         }
     }
 

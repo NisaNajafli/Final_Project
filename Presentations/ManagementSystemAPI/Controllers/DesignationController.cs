@@ -21,7 +21,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200, _unitOfWork.DesignationReposittory.GetAll("Department").ToList());
+                return StatusCode(200, await _unitOfWork.DesignationReposittory.GetAllAsync(null,"Department"));
             }
             catch (Exception ex)
             {
@@ -31,7 +31,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Designation designation = _unitOfWork.DesignationReposittory.GetById(id);
+            Designation designation = await _unitOfWork.DesignationReposittory.GetById(id);
             if (designation == null)
             {
                 return StatusCode(404);
@@ -53,7 +53,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDesignation([FromRoute] int id)
         {
-            Designation designation = _unitOfWork.DesignationReposittory.GetById(id);
+            Designation designation = await _unitOfWork.DesignationReposittory.GetById(id);
             if (designation == null)
             {
                 return StatusCode(404);
@@ -65,7 +65,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDesignation designationdto)
         {
-            Designation designation = _unitOfWork.DesignationReposittory.GetAll("Department").FirstOrDefault(i => i.Id == id);
+            Designation designation = await _unitOfWork.DesignationReposittory.GetAsync(null,"Department");
             if (designation == null)
             {
                 return StatusCode(404);

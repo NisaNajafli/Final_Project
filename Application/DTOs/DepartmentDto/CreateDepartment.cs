@@ -10,6 +10,5 @@ namespace Application.DTOs.DepartmentDto
     public class CreateDepartment
     {
         public string Name { get; set; }
-        public ICollection<Employee> Employees { get; set; }
     }
 }

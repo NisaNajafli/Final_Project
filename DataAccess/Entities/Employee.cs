@@ -35,6 +35,9 @@ namespace DataAccess.Entities
         public ICollection<Task>? Tasks { get; set; }
         public ICollection<Ticket>? Tickets { get; set; }
         public ICollection<Leave>? Leaves { get; set; }
+        public string Password { get; set; }
+        
+        public string ConfirmPassword { get; set; }
         [NotMapped]
         public IFormFile? Image { get; set; }
     }

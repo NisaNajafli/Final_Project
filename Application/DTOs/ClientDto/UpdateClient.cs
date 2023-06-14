@@ -23,7 +23,7 @@ namespace Application.DTOs.ClientDto
         public Genders Gender { get; set; }
         public DateTime Brithday { get; set; }
         public string Address { get; set; }
-        public ICollection<Project> Projects { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<int>? ProjectIds { get; set; }
+        public ICollection<int>? TaskIds { get; set; }
     }
 }

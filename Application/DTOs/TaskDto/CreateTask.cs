@@ -9,5 +9,6 @@ namespace Application.DTOs.TaskDto
     public class CreateTask
     {
         public string Content { get; set; }
+        public int ProjectId { get; set; }
     }
 }

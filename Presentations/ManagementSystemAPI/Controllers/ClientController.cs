@@ -14,11 +14,10 @@ namespace ManagementSystemAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ClientController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
+        public ClientController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
         }
-        
     }
 }

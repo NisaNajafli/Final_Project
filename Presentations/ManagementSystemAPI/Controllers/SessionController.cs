@@ -21,7 +21,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200, _unitOfWork.SessionRepository.GetAll().ToList());
+                return StatusCode(200,await _unitOfWork.SessionRepository.GetAsync(null));
             }
             catch (Exception ex)
             {
@@ -31,7 +31,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Session session = _unitOfWork.SessionRepository.GetById(id);
+            Session session = await _unitOfWork.SessionRepository.GetById(id);
             if (session == null)
             {
                 return StatusCode(404);
@@ -54,7 +54,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSession([FromRoute] int id)
         {
-            Session session = _unitOfWork.SessionRepository.GetById(id);
+            Session session = await _unitOfWork.SessionRepository.GetById(id);
             if (session == null)
             {
                 return StatusCode(404);
@@ -66,7 +66,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateSession sessiondto)
         {
-            Session session = _unitOfWork.SessionRepository.GetById(id);
+            Session session = await _unitOfWork.SessionRepository.GetById(id);
             if (session == null)
             {
                 return StatusCode(404);

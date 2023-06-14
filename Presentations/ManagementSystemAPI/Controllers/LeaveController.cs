@@ -21,7 +21,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200, _unitOfWork.LeaveRepository.GetAll("Employee").ToList());
+                return StatusCode(200,await _unitOfWork.LeaveRepository.GetAllAsync(null));
             }
             catch (Exception ex)
             {
@@ -31,7 +31,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Leave leave = _unitOfWork.LeaveRepository.GetById(id);
+            Leave leave = await _unitOfWork.LeaveRepository.GetById(id);
             if(leave == null)
             {
                 return StatusCode(404);
@@ -43,13 +43,12 @@ namespace ManagementSystemAPI.Controllers
         {
             Leave leave = new Leave()
             {
-                LeaveType = leaveDto.LeaveType,
+                LeaveTypeId = leaveDto.LeaveTypeId,
                 From = leaveDto.From,
                 To = leaveDto.To,
                 Reason = leaveDto.Reason,
                 Status = leaveDto.Status,
                 NoOfDays = leaveDto.NoOfDays,
-                EmployeeId = leaveDto.EmployeeId, 
             };
             _unitOfWork.LeaveRepository.Create(leave);
             await _unitOfWork.Commit();
@@ -58,7 +57,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLeave([FromRoute] int id)
         {
-            Leave leave = _unitOfWork.LeaveRepository.GetById(id);
+            Leave leave = await _unitOfWork.LeaveRepository.GetById(id);
             if (leave == null)
             {
                 return StatusCode(404);
@@ -70,19 +69,18 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateLeave leavedto)
         {
-            Leave leave = _unitOfWork.LeaveRepository.GetAll("Employee").FirstOrDefault(i => i.Id == id);
+            Leave leave = await _unitOfWork.LeaveRepository.GetById(id);
             if (leave == null)
             {
                 return StatusCode(404);
             }
             leave.Id = id;
-            leave.LeaveType=leavedto.LeaveType;
+            leave.LeaveTypeId = leavedto.LeaveTypeId;
             leave.From= leavedto.From;
             leave.To= leavedto.To;
             leave.Reason= leavedto.Reason;
             leave.Status= leavedto.Status;
             leave.NoOfDays= leavedto.NoOfDays;
-            leave.EmployeeId= leavedto.EmployeeId;
             _unitOfWork.LeaveRepository.Update(leave, id);
             await _unitOfWork.Commit();
             return Ok(leave);

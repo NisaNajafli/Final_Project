@@ -11,5 +11,7 @@ namespace Application.DTOs.ProjectDto
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
+        public int TeamId { get; set; }
+        public int TeamLeaderId { get; set; }
     }
 }

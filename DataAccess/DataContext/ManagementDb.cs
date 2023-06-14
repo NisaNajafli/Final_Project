@@ -15,7 +15,11 @@ namespace DataAccess.DataContext
         {
             
         }
-       // public DbSet<Budget> Budgets { get; set; }
+        public DbSet<Budget> Budgets { get; set; }
+        public DbSet<BudgetExpenses> BudgetExpenses { get; set; }
+        public DbSet<BudgetRevenues> BudgetRevenues { get; set; }
+        public DbSet<ExpectedRevenues> ExpectedRevenues { get; set; }
+        public DbSet<ExpectedExpenses> ExpectedExpenses { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Department> Departments { get; set; }
@@ -25,6 +29,11 @@ namespace DataAccess.DataContext
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<LeaveType> LeaveTypes { get; set; }
+        public DbSet<Leave> Leaves { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());

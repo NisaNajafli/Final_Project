@@ -21,7 +21,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200, _unitOfWork.DepartmentRepository.GetAll(null).ToList());
+                return StatusCode(200,await _unitOfWork.DepartmentRepository.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -31,7 +31,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Department department = _unitOfWork.DepartmentRepository.GetById(id);
+            Department department = await _unitOfWork.DepartmentRepository.GetById(id);
             if (department == null)
             {
                 return StatusCode(404);
@@ -52,7 +52,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment([FromRoute] int id)
         {
-            Department department = _unitOfWork.DepartmentRepository.GetById(id);
+            Department department = await _unitOfWork.DepartmentRepository.GetById(id);
             if (department == null)
             {
                 return StatusCode(404);
@@ -64,7 +64,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDepartment departmentdto)
         {
-            Department department = _unitOfWork.DepartmentRepository.GetById(id);
+            Department department = await _unitOfWork.DepartmentRepository.GetById(id);
             if (department == null)
             {
                 return StatusCode(404);

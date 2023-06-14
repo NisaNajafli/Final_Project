@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Entities
 {
-    public class Company:BaseAuditable
+    public class Company:BaseEntity
     {
         public Company()
         {

@@ -53,7 +53,10 @@ namespace ManagementSystemAPI.Controllers
             User user= await _usermanager.FindByNameAsync(login.UserName);
             if(user==null)
             {
-                return BadRequest();
+                return BadRequest(new
+                {
+                    Message = "Password incorrect"
+                });
             }
             bool chechPassword= await _usermanager.CheckPasswordAsync(user,login.Password);
             if(!chechPassword)

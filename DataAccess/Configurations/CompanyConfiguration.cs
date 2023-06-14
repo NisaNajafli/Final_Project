@@ -14,7 +14,6 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Company> builder)
         {
-            builder.ConfigureBaseAuditable();
             builder.ConfigureBaseEntity();
             builder.Property(c => c.Name).IsRequired();
             builder.HasMany(c => c.Employees).WithOne(c=>c.Company).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.Restrict);

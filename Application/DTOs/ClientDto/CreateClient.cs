@@ -21,12 +21,12 @@ namespace Application.DTOs.ClientDto
         public string ConfirmPassword { get; set; }
         public string PhoneNumber { get; set; }
         public string Job { get; set; }
-        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public Genders Gender { get; set; }
         public DateTime Brithday { get; set; }
         public string Address { get; set; }
-        public ICollection<Project>? Projects { get; set; }
-        public ICollection<Task>? Tasks { get; set; }
+        public ICollection<int>? ProjectIds { get; set; }
+        public ICollection<int>? TaskIds { get; set; }
         public IFormFile? Image { get; set; }
     }
 }
