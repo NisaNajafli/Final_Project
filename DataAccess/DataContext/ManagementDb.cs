@@ -31,7 +31,6 @@ namespace DataAccess.DataContext
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<LeaveType> LeaveTypes { get; set; }
         public DbSet<Leave> Leaves { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Team> Teams { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)

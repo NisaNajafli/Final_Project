@@ -17,7 +17,7 @@ namespace Application.DTOs.BudgetDto
         public decimal TaxAmount { get; set; }
         public List<ExpectedExpenses>? ExpectedExpenses { get; set; }
         public List<ExpectedRevenues>? ExpectedRevenues { get; set; }
-        public decimal TotalRevenues
+        public decimal? TotalRevenues
         {
             get
             {
@@ -25,7 +25,7 @@ namespace Application.DTOs.BudgetDto
                 else return 0;
             }
         }
-        public decimal TotalExpenses
+        public decimal? TotalExpenses
         {
             get
             {

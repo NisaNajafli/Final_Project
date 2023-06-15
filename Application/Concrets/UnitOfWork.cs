@@ -34,6 +34,11 @@ namespace Application.Concrets
         private ITicketRepository? _ticketRepository;
         private ILeaveTypeRepository? _leaveTypeRepository;
         private IBudgetRepository? _budgetReposıtory;
+        private IExpectedExpensesRepository? _expectedExpensesRepository;
+        private IExpectedRevenuesRepository? _expectedRevenuesRepository;
+        private IBudgetExpensesRepository _budgetExpensesRepository;
+        private IBudgetRevenuesRepository _budgetRevenuesRepository;
+
 
 
         public IClientRepository ClientRepository => _clientRepository ??= new ClientRepository(_context);
@@ -48,8 +53,10 @@ namespace Application.Concrets
         public ITicketRepository TicketRepository => _ticketRepository ??= new TicketRepository(_context);
         public ILeaveTypeRepository LeaveTypeRepository => _leaveTypeRepository ??= new LeaveTypeRepository(_context);
         public IBudgetRepository BudgetRepository => _budgetReposıtory ??= new BudgetRepository(_context);
-
-       // public IBudgetRepository BudgetReposıtory => throw new NotImplementedException();
+        public IExpectedRevenuesRepository ExpectedRevenuesRepository => _expectedRevenuesRepository ??= new ExpectedRevenuesRepository(_context);
+        public IExpectedExpensesRepository ExpectedExpensesRepository => _expectedExpensesRepository ??= new ExpectedExpensesRepository(_context);
+        public IBudgetRevenuesRepository BudgetRevenuesRepository => _budgetRevenuesRepository ??= new BudgetRevenuesRepository(_context);
+        public IBudgetExpensesRepository BudgetExpensesRepository => _budgetExpensesRepository ??= new BudgetExpensesRepository(_context) ;
 
         public Task Commit()
         {

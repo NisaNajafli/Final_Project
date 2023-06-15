@@ -13,8 +13,9 @@ namespace DataAccess.Entities
         public decimal Amount { get; set; }
         public string Notes { get; set; }
         public DateTime ExpenseDate { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+        public string FileName { get; set; }
         [NotMapped]
         public IFormFile AttachFile { get; set; }
     }

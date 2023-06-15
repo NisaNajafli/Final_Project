@@ -21,6 +21,10 @@ namespace Application.Services.Abstracts
         public ITicketRepository TicketRepository { get; }
         public ILeaveTypeRepository LeaveTypeRepository { get; }
         public IBudgetRepository BudgetRepository { get; }
+        public IExpectedExpensesRepository ExpectedExpensesRepository { get; }
+        public IExpectedRevenuesRepository ExpectedRevenuesRepository { get; }
+        public IBudgetExpensesRepository BudgetExpensesRepository { get; }
+        public IBudgetRevenuesRepository BudgetRevenuesRepository { get; }
         Task Commit();
     }
 }

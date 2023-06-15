@@ -12,9 +12,13 @@ namespace DataAccess.Entities
         {
             Clients = new HashSet<Client>();
             Employees = new HashSet<Employee>();
+            BudgetExpenses = new HashSet<BudgetExpenses>();
+            BudgetRevenues = new HashSet<BudgetRevenues>();
         }
         public string Name { get; set; }
         public ICollection<Client> Clients { get; set; }
         public ICollection<Employee> Employees { get; set; }
+        public ICollection<BudgetExpenses> BudgetExpenses { get; set; }
+        public ICollection<BudgetRevenues> BudgetRevenues { get; set; }
     }
 }

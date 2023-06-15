@@ -15,7 +15,7 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<BudgetExpenses> builder)
         {
             builder.ConfigureBaseEntity();
-            builder.HasOne(c=>c.Category).WithMany(c=>c.BudgetExpenses).HasForeignKey(c=>c.CategoryId).OnDelete(DeleteBehavior.Restrict);   
+            builder.HasOne(c=>c.Company).WithMany(c=>c.BudgetExpenses).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.Restrict);   
         }
     }
 }

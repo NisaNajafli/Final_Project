@@ -44,8 +44,7 @@ namespace ManagementSystemAPI.Controllers
                 StartDate = budgetdto.StartDate,
                 EndDate = budgetdto.EndDate,
                 Tax = budgetdto.TaxAmount,
-                TotalExpenses = 0,
-                TotalRevenue=0
+
                 //ExpectedExpenses = budgetdto.ExpectedExpenses.Select(c => new ExpectedExpenses { Amount = c.Amount }).ToList(),
                 //ExpectedRevenues = budgetdto.ExpectedRevenues.Select(c => new ExpectedRevenues { Amount = c.Amount }).ToList(),
             };
@@ -61,20 +60,20 @@ namespace ManagementSystemAPI.Controllers
             budget.Title = budgetdto.Title;
             budget.StartDate = budgetdto.StartDate;
             budget.EndDate = budgetdto.EndDate;
-            if (budgetdto.ExpectedRevenues != null)
-            {
-                budget.ExpectedRevenues = budgetdto.ExpectedRevenues
-                    .Select(er => new ExpectedRevenues { Amount = er.Amount })
-                    .ToList();
-            }
-            budget.TotalRevenue = budget.ExpectedRevenues.Sum(er => er.Amount);
-            if (budgetdto.ExpectedExpenses != null)
-            {
-                budget.ExpectedExpenses = budgetdto.ExpectedExpenses
-                    .Select(er => new ExpectedExpenses { Amount = er.Amount })
-                    .ToList();
-            }
-            budget.TotalExpenses = budget.ExpectedRevenues.Sum(er => er.Amount);
+            //if (budgetdto.ExpectedRevenues != null)
+            //{
+            //    budget.ExpectedRevenues = budgetdto.ExpectedRevenues
+            //        .Select(er => new ExpectedRevenues { Amount = er.Amount })
+            //        .ToList();
+            //}
+            //budget.TotalRevenue = budget.ExpectedRevenues.Sum(er => er.Amount);
+            //if (budgetdto.ExpectedExpenses != null)
+            //{
+            //    budget.ExpectedExpenses = budgetdto.ExpectedExpenses
+            //        .Select(er => new ExpectedExpenses { Amount = er.Amount })
+            //        .ToList();
+            //}
+            //budget.TotalExpenses = budget.ExpectedRevenues.Sum(er => er.Amount);
             _unitOfWork.BudgetRepository.Update(budget, id);
             await _unitOfWork.Commit();
             return Ok(budget);
