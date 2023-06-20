@@ -17,16 +17,16 @@ namespace Application.DTOs.ClientDto
         public string LastName { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        //public string Password { get; set; }
+        //public string ConfirmPassword { get; set; }
         public string PhoneNumber { get; set; }
-        public string Job { get; set; }
-        public string CompanyName { get; set; }
-        public Genders Gender { get; set; }
-        public DateTime Brithday { get; set; }
-        public string Address { get; set; }
-        public ICollection<int>? ProjectIds { get; set; }
-        public ICollection<int>? TaskIds { get; set; }
-        public IFormFile? Image { get; set; }
+        //public string Job { get; set; }
+        public int CompanyId { get; set; }
+        //public Genders Gender { get; set; }
+       // public DateTime Brithday { get; set; }
+        //public string Address { get; set; }
+       // public ICollection<int>? ProjectIds { get; set; }
+        //public ICollection<int>? TaskIds { get; set; }
+        //public IFormFile? Image { get; set; }
     }
 }

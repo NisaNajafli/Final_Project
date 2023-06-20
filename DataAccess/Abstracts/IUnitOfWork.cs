@@ -25,6 +25,7 @@ namespace Application.Services.Abstracts
         public IExpectedRevenuesRepository ExpectedRevenuesRepository { get; }
         public IBudgetExpensesRepository BudgetExpensesRepository { get; }
         public IBudgetRevenuesRepository BudgetRevenuesRepository { get; }
+        public ITaxRepository TaxRepository { get; }
         Task Commit();
     }
 }

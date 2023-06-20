@@ -4,6 +4,7 @@ using DataAccess.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ManagementDb))]
-    partial class ManagementDbModelSnapshot : ModelSnapshot
+    [Migration("20230619121644_AddTax")]
+    partial class AddTax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("TasksId");
 
-                    b.ToTable("ClientTask", (string)null);
+                    b.ToTable("ClientTask");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Budget", b =>
@@ -73,7 +75,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Budgets", (string)null);
+                    b.ToTable("Budgets");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.BudgetExpenses", b =>
@@ -115,7 +117,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BudgetExpenses", (string)null);
+                    b.ToTable("BudgetExpenses");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.BudgetRevenues", b =>
@@ -157,7 +159,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BudgetRevenues", (string)null);
+                    b.ToTable("BudgetRevenues");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Company", b =>
@@ -184,7 +186,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Department", b =>
@@ -227,7 +229,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Designation", b =>
@@ -275,7 +277,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Designations", (string)null);
+                    b.ToTable("Designations");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.EmployeeAttedance", b =>
@@ -314,7 +316,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("EmployeesAttedances", (string)null);
+                    b.ToTable("EmployeesAttedances");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ExpectedExpenses", b =>
@@ -349,7 +351,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("BudgetId");
 
-                    b.ToTable("ExpectedExpenses", (string)null);
+                    b.ToTable("ExpectedExpenses");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ExpectedRevenues", b =>
@@ -384,7 +386,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("BudgetId");
 
-                    b.ToTable("ExpectedRevenues", (string)null);
+                    b.ToTable("ExpectedRevenues");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Leave", b =>
@@ -447,7 +449,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LeaveTypeId");
 
-                    b.ToTable("Leaves", (string)null);
+                    b.ToTable("Leaves");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.LeaveType", b =>
@@ -474,43 +476,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LeaveTypes", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Policy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PolicyFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("Policy", (string)null);
+                    b.ToTable("LeaveTypes");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Project", b =>
@@ -529,15 +495,12 @@ namespace DataAccess.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<DateTime?>("Deadline")
+                    b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -552,18 +515,6 @@ namespace DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("RateAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
@@ -585,7 +536,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("TeamleaderId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Role", b =>
@@ -664,7 +615,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Session", (string)null);
+                    b.ToTable("Session");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Task", b =>
@@ -712,7 +663,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Tax", b =>
@@ -745,7 +696,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Taxs", (string)null);
+                    b.ToTable("Tax");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Team", b =>
@@ -762,7 +713,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Ticket", b =>
@@ -837,7 +788,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
@@ -944,7 +895,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("LeavesId");
 
-                    b.ToTable("EmployeeLeave", (string)null);
+                    b.ToTable("EmployeeLeave");
                 });
 
             modelBuilder.Entity("EmployeeTask", b =>
@@ -959,7 +910,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("TasksId");
 
-                    b.ToTable("EmployeeTask", (string)null);
+                    b.ToTable("EmployeeTask");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1077,7 +1028,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("RoleUser", (string)null);
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Client", b =>
@@ -1254,17 +1205,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("LeaveType");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Policy", b =>
-                {
-                    b.HasOne("DataAccess.Entities.Department", "Department")
-                        .WithMany("Policies")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Project", b =>
@@ -1487,8 +1427,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Designations");
 
                     b.Navigation("Employees");
-
-                    b.Navigation("Policies");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Designation", b =>

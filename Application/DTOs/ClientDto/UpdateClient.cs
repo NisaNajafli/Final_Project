@@ -14,16 +14,14 @@ namespace Application.DTOs.ClientDto
     public class UpdateClient
     {
         public int Id { get; set; }
-        public string ImageName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Job { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        //public string? password { get; set; }
+        //public string confirmpassword { get; set; }
+        public string PhoneNumber { get; set; }
+        //public string Job { get; set; }
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
-        public Genders Gender { get; set; }
-        public DateTime Brithday { get; set; }
-        public string Address { get; set; }
-        public ICollection<int>? ProjectIds { get; set; }
-        public ICollection<int>? TaskIds { get; set; }
     }
 }

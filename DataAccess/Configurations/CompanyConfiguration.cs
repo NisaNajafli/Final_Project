@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    internal class CompanyConfiguration : IEntityTypeConfiguration<Company>
+    public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
         public void Configure(EntityTypeBuilder<Company> builder)
         {

@@ -45,7 +45,7 @@ namespace ManagementSystemAPI.Controllers
                 EndDate = budgetdto.EndDate,
                 Tax = budgetdto.TaxAmount,
 
-                //ExpectedExpenses = budgetdto.ExpectedExpenses.Select(c => new ExpectedExpenses { Amount = c.Amount }).ToList(),
+                //ExpectedExpenses = budgetdto.ExpectedExpenses.Select(c => new ExpectedExpenses { Amount = c.Amount }).ToList(),nnnnnn
                 //ExpectedRevenues = budgetdto.ExpectedRevenues.Select(c => new ExpectedRevenues { Amount = c.Amount }).ToList(),
             };
             _unitOfWork.BudgetRepository.Create(budget);

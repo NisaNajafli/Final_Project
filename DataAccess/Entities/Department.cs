@@ -16,5 +16,6 @@ namespace DataAccess.Entities
         public string Name { get; set; }
         public ICollection<Designation> Designations { get; set; }
         public ICollection<Employee> Employees { get; set; }
+        public ICollection<Policy> Policies { get; set; }
     }
 }

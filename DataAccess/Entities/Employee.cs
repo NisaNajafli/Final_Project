@@ -17,15 +17,15 @@ namespace DataAccess.Entities
             Tickets=new HashSet<Ticket>();
             Leaves=new HashSet<Leave>();
         }
-        public string? LastName { get; set; }
-        public string? FirstName { get; set; }
+       // public string? LastName { get; set; }
+       // public string? FirstName { get; set; }
 
-        public int DesignationId { get; set; }
-        public Designation Designation { get; set; }
-        public int DepartmentId { get; set; }
-        public Department Department { get; set; }
-        public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public int? DesignationId { get; set; }
+        public Designation? Designation { get; set; }
+        public int? DepartmentId { get; set; }
+        public Department? Department { get; set; }
+        public int? CompanyId { get; set; }
+        public Company? Company { get; set; }
         public int? SessionId { get; set; }
         public Session? Session { get; set; }
         public DateTime JoiningDate { get; set; } = DateTime.UtcNow;

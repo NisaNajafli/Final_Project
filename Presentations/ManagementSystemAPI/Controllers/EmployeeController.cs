@@ -1,4 +1,5 @@
-﻿using Application.DTOs.CompanyDto;
+﻿using Application.DTOs.AuthDto;
+using Application.DTOs.CompanyDto;
 using Application.DTOs.EmployeeDto;
 using Application.DTOs.LeaveDto;
 using Application.Services.Abstracts;
@@ -6,6 +7,10 @@ using DataAccess.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace ManagementSystemAPI.Controllers
@@ -29,43 +34,82 @@ namespace ManagementSystemAPI.Controllers
         [HttpPost("signin")]
         public async Task<IActionResult> SignIn([FromBody] SignInemployee employee)
         {
-            string defaultPassword = _configuration["DefaultPassword:Password"];
-            Employee employee1 = new Employee()
+           string defaultPassword = _configuration["DefaultPassword:PasswordEmployee"];
+            //Employee employee1 = new Employee()
+            //{
+            //    //LastName = employee.LastName,
+            //    //FirstName = employee.FirstName,
+            //    Email = employee.Email,
+            //    UserName = employee.UserName,
+            //    JoiningDate = employee.JoiningDate,
+            //   // PhoneNumber = employee.Phone
+            //};
+            User user = await _userManager.FindByNameAsync(employee.UserName);
+            if (user==null)
             {
-                LastName = employee.LastName,
-                FirstName = employee.FirstName,
-                Email = employee.Email,
-                UserName = employee.UserName,
-                JoiningDate = employee.JoiningDate,
-                PhoneNumber = employee.Phone
-            };
-            IdentityResult result = await _userManager.CreateAsync(employee1, defaultPassword);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
+                return BadRequest(new
+                {
+                    Message = "Username or password incorrect"
+                });
             }
-            SignInResult resultsign = await _signInManager.PasswordSignInAsync(employee1, defaultPassword, false, false);
-            if (!resultsign.Succeeded)
+            //SignInResult resultsign = await _signInManager.PasswordSignInAsync(user, defaultPassword, false, false);
+            //if (!resultsign.Succeeded)
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Username or password incorrect"
+            //    });
+            //}
+           
+            bool chechPassword = await _userManager.CheckPasswordAsync(user, employee.Password);
+            if (!chechPassword)
             {
                 return BadRequest();
             }
-            return Ok();
+
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.Email,user.Email),
+            };
+            string privateKey = _configuration["SecurityToken:securityKey"];
+            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
+            SigningCredentials signing = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            JwtSecurityToken token = new JwtSecurityToken
+                (
+                issuer: _configuration["SecurityToken:issuer"],
+                audience: _configuration["SecurityToken:audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(60),
+                signingCredentials: signing
+                );
+            return Ok(new
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+            });
         }
+
         [HttpPost("resetpassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordEmployee employee)
         {
-            var employee1 = await _userManager.FindByNameAsync(employee.UserName);
+            Employee employee1 = (Employee)await _userManager.FindByNameAsync(employee.UserName);
             if (employee1 == null)
             {
                 return NotFound();
             }
-            var resettoken = await _userManager.GeneratePasswordResetTokenAsync(employee1);
-            var resetResult = await _userManager.ResetPasswordAsync(employee1, resettoken, employee.NewPassword);
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(employee1);
+            var resetResult = await _userManager.ResetPasswordAsync(employee1, resetToken, employee.NewPassword);
             if (!resetResult.Succeeded)
             {
                 return BadRequest(resetResult.Errors);
             }
-
+            employee1.Password=employee.NewPassword;
+            bool NewUserPassword = await _userManager.CheckPasswordAsync(employee1, employee.NewPassword);
+            if (!NewUserPassword)
+            {
+                return BadRequest();
+            }
             return Ok();
         }
         [HttpGet]
@@ -93,6 +137,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEmployee([FromForm] CreateEmployee employeedto)
         {
+            string defaultPassword = _configuration["DefaultPassword:PasswordEmployee"];
             Employee employee = new Employee()
             {
                 UserName = employeedto.UserName,
@@ -103,9 +148,21 @@ namespace ManagementSystemAPI.Controllers
                 FirstName = employeedto.FirstName,
                 LastName = employeedto.LastName,
                 Email = employeedto.Email,
-                Password = employeedto.Password,
-                ConfirmPassword = employeedto.ConfirmPassword,
+                Password = defaultPassword
+                //ConfirmPassword = employeedto.ConfirmPassword,
             };
+            IdentityResult result = await _userManager.CreateAsync(employee, employee.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+            //employee.CompanyId = employeedto.CompanyId;
+
+            //SignInResult resultsign = await _signInManager.PasswordSignInAsync(employee, defaultPassword, false, false);
+            //if (!resultsign.Succeeded)
+            //{
+            //    return BadRequest();
+            //}
             _unitOfWork.EmployeeRepository.Create(employee);
             await _unitOfWork.Commit();
             return StatusCode(201);

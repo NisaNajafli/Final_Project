@@ -19,6 +19,7 @@ namespace DataAccess.Configurations
             builder.HasMany(c=>c.Tickets).WithOne(c=>c.Employee).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(c => c.Leaves).WithMany(c => c.Employees);
             builder.HasMany(c => c.Attedances).WithOne(c => c.Employee).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(e=>e.Company).WithMany(e=>e.Employees).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }
