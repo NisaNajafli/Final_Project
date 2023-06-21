@@ -11,5 +11,6 @@ namespace DataAccess.Entities
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
         public DateTime Date { get; set; }
+        public bool IsPunch { get; set; }
     }
 }

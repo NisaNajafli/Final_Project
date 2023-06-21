@@ -17,7 +17,6 @@ namespace Application.Services.Abstracts
         public IProjectRepository ProjectRepository { get; }
         public ITaskRepository TaskRepository { get; }
         public ILeaveRepository LeaveRepository { get; }
-        public ISessionRepository SessionRepository { get; }
         public ITicketRepository TicketRepository { get; }
         public ILeaveTypeRepository LeaveTypeRepository { get; }
         public IBudgetRepository BudgetRepository { get; }

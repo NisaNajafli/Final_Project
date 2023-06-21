@@ -30,7 +30,6 @@ namespace Application.Concrets
         private IProjectRepository? _projectRepository;
         private ITaskRepository? _taskRepository;
         private ILeaveRepository? _leaveRepository;
-        private ISessionRepository? _sessionRepository;
         private ITicketRepository? _ticketRepository;
         private ILeaveTypeRepository? _leaveTypeRepository;
         private IBudgetRepository? _budgetReposıtory;
@@ -50,7 +49,6 @@ namespace Application.Concrets
         public IProjectRepository ProjectRepository => _projectRepository ??= new ProjectRepository(_context);
         public ITaskRepository TaskRepository => _taskRepository ??= new TaskRepository(_context);
         public ILeaveRepository LeaveRepository => _leaveRepository ??= new LeaveRepository(_context);
-        public ISessionRepository SessionRepository => _sessionRepository ??= new SessionRepository(_context);
         public ITicketRepository TicketRepository => _ticketRepository ??= new TicketRepository(_context);
         public ILeaveTypeRepository LeaveTypeRepository => _leaveTypeRepository ??= new LeaveTypeRepository(_context);
         public IBudgetRepository BudgetRepository => _budgetReposıtory ??= new BudgetRepository(_context);

@@ -50,15 +50,15 @@ namespace ManagementSystemAPI.Controllers
                 CompanyId = expensedto.CompanyId,
                 Notes = expensedto.Notes,
             };
-            if (!expensedto.AttachFile.CheckSize(2048) && !expensedto.AttachFile.CheckType("/image"))
+            if (!expensedto.AttachFile.CheckSize(2048) && !expensedto.AttachFile.CheckType("image/"))
             {
                 return BadRequest(new
                 {
                     Message = "Size or type incorrect"
                 });
             }
-            string FileName = await expensedto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
-            expense.FileName = FileName;
+           // string FileName = await expensedto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
+            //expense.FileName = FileName;
             _unitOfWork.BudgetExpensesRepository.Create(expense);
             await _unitOfWork.Commit();
             return StatusCode(201);

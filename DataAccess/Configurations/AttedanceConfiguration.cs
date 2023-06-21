@@ -1,6 +1,5 @@
 ﻿using DataAccess.Entities;
 using DataAccess.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -11,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    public class SessionConfiguration : IEntityTypeConfiguration<Session>
+    public class AttedanceConfiguration : IEntityTypeConfiguration<EmployeeAttedance>
     {
-        public void Configure(EntityTypeBuilder<Session> builder)
+        public void Configure(EntityTypeBuilder<EmployeeAttedance> builder)
         {
-            builder.ConfigureBaseEntity();
             builder.ConfigureBaseAuditable();
-            builder.HasMany(s=>s.Employees).WithOne(s=>s.Session).HasForeignKey(s=>s.SessionId).OnDelete(DeleteBehavior.Restrict);
+            builder.ConfigureBaseEntity();
+            builder.Property(c=>c.IsPunch).HasDefaultValue(false);
         }
     }
 }

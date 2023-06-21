@@ -10,14 +10,10 @@ namespace DataAccess.Entities
     {
         public enum LeaveStatus
         {
-            New,
+            New=1,
             Pending,
             Approved,
             Declined
-        }
-        public Leave()
-        {
-            Employees = new HashSet<Employee>();
         }
         public int LeaveTypeId { get; set; }
         public LeaveType LeaveType { get; set; }
@@ -27,6 +23,7 @@ namespace DataAccess.Entities
         public int NoOfDays { get; set; }
         public string Reason { get; set; }
         public LeaveStatus Status { get; set; }
-        public ICollection<Employee> Employees { get; set; }
+        public int EmployeeId{ get; set; }
+        public Employee Employee { get; set; }
     }
 }

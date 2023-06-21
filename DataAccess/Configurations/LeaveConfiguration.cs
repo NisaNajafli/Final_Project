@@ -16,7 +16,7 @@ namespace DataAccess.Configurations
         {
             builder.ConfigureBaseAuditable();
             builder.ConfigureBaseEntity();
-            builder.HasMany(c=>c.Employees).WithMany(c=>c.Leaves);
+            builder.HasOne(c=>c.Employee).WithMany(c=>c.Leaves).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             
             
         }

@@ -163,8 +163,8 @@ namespace ManagementSystemAPI.Controllers
             //{
             //    return BadRequest();
             //}
-            _unitOfWork.EmployeeRepository.Create(employee);
-            await _unitOfWork.Commit();
+            //_unitOfWork.EmployeeRepository.Create(employee);
+            //await _unitOfWork.Commit();
             return StatusCode(201);
         }
         [HttpDelete("{id}")]

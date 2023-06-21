@@ -34,13 +34,15 @@ namespace DataAccess.DataContext
         public DbSet<Leave> Leaves { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Tax> Taxs { get; set; }
+        public DbSet<Information> Informations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
             builder.Entity<Employee>()
-        .Property(e => e.Id)
-        .ValueGeneratedOnAdd();
+        .HasOne(e => e.Information)
+        .WithOne(i => i.Employee)
+        .HasForeignKey<Employee>(e => e.InformationId);
             base.OnModelCreating(builder);
         }
     }

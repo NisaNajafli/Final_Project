@@ -49,6 +49,7 @@ namespace ManagementSystemAPI.Controllers
                 Reason = leaveDto.Reason,
                 Status = leaveDto.Status,
                 NoOfDays = leaveDto.NoOfDays,
+                EmployeeId = leaveDto.EmployeeId,
             };
             _unitOfWork.LeaveRepository.Create(leave);
             await _unitOfWork.Commit();
@@ -81,6 +82,7 @@ namespace ManagementSystemAPI.Controllers
             leave.Reason= leavedto.Reason;
             leave.Status= leavedto.Status;
             leave.NoOfDays= leavedto.NoOfDays;
+            leave.EmployeeId= leavedto.EmployeeId;
             _unitOfWork.LeaveRepository.Update(leave, id);
             await _unitOfWork.Commit();
             return Ok(leave);

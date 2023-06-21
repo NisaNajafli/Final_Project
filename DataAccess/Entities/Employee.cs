@@ -26,8 +26,6 @@ namespace DataAccess.Entities
         public Department? Department { get; set; }
         public int? CompanyId { get; set; }
         public Company? Company { get; set; }
-        public int? SessionId { get; set; }
-        public Session? Session { get; set; }
         public DateTime JoiningDate { get; set; } = DateTime.UtcNow;
         public int? TeamId { get; set; }
         public Team? Team { get; set; }
@@ -38,7 +36,8 @@ namespace DataAccess.Entities
         public string Password { get; set; }
         
         public string ConfirmPassword { get; set; }
-        [NotMapped]
-        public IFormFile? Image { get; set; }
+        public int InformationId { get; set; }
+        public Information Information { get; set; }
+
     }
 }

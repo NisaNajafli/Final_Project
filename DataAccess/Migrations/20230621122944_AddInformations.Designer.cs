@@ -4,6 +4,7 @@ using DataAccess.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ManagementDb))]
-    partial class ManagementDbModelSnapshot : ModelSnapshot
+    [Migration("20230621122944_AddInformations")]
+    partial class AddInformations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -444,6 +446,8 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Informations");
                 });
@@ -1140,9 +1144,6 @@ namespace DataAccess.Migrations
                     b.Property<int?>("DesignationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("InformationId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("JoiningDate")
                         .HasColumnType("datetime2");
 
@@ -1158,10 +1159,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("DesignationId");
-
-                    b.HasIndex("InformationId")
-                        .IsUnique()
-                        .HasFilter("[InformationId] IS NOT NULL");
 
                     b.HasIndex("TeamId");
 
@@ -1247,6 +1244,17 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Budget");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Information", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Leave", b =>
@@ -1437,12 +1445,6 @@ namespace DataAccess.Migrations
                         .HasForeignKey("DesignationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("DataAccess.Entities.Information", "Information")
-                        .WithOne("Employee")
-                        .HasForeignKey("DataAccess.Entities.Employee", "InformationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataAccess.Entities.Team", "Team")
                         .WithMany("Employees")
                         .HasForeignKey("TeamId")
@@ -1453,8 +1455,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Designation");
-
-                    b.Navigation("Information");
 
                     b.Navigation("Team");
                 });
@@ -1489,12 +1489,6 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.Designation", b =>
                 {
                     b.Navigation("Employees");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Information", b =>
-                {
-                    b.Navigation("Employee")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccess.Entities.LeaveType", b =>
