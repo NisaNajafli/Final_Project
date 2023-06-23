@@ -14,6 +14,7 @@ namespace DataAccess.Entities
         public Client()
         {
             Tasks=new HashSet<Task>();  
+            Projects=new HashSet<Project>();
         }
         public enum Genders
         {
@@ -30,6 +31,7 @@ namespace DataAccess.Entities
         public DateTime Brithday { get; set; }
         public string Address { get; set; }
         public ICollection<Task> Tasks { get; set; }
+        public ICollection<Project> Projects { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
         public string Password { get; set; }

@@ -19,5 +19,6 @@ namespace Application.Services.Abstracts
         void Update(T entity,int id);
         void Delete(int id);
 
+
     }
 }

@@ -4,6 +4,7 @@ using DataAccess.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ManagementDb))]
-    partial class ManagementDbModelSnapshot : ModelSnapshot
+    [Migration("20230623103641_ProjectEmployee")]
+    partial class ProjectEmployee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -313,6 +315,24 @@ namespace DataAccess.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeesAttedances");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.EmployeeProject", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "EmployeeId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeProjects");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ExpectedExpenses", b =>
@@ -922,21 +942,6 @@ namespace DataAccess.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
-            modelBuilder.Entity("EmployeeProject", b =>
-                {
-                    b.Property<int>("EmployeesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmployeesId", "ProjectsId");
-
-                    b.HasIndex("ProjectsId");
-
-                    b.ToTable("EmployeeProject");
-                });
-
             modelBuilder.Entity("EmployeeTask", b =>
                 {
                     b.Property<int>("EmployeesId")
@@ -1198,6 +1203,25 @@ namespace DataAccess.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.EmployeeProject", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Employee", "Employee")
+                        .WithMany("EmployeeProjects")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.Project", "Project")
+                        .WithMany("EmployeeProjects")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.ExpectedExpenses", b =>
                 {
                     b.HasOne("DataAccess.Entities.Budget", "Budget")
@@ -1305,21 +1329,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("EmployeeProject", b =>
-                {
-                    b.HasOne("DataAccess.Entities.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("EmployeesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("EmployeeTask", b =>
@@ -1490,6 +1499,11 @@ namespace DataAccess.Migrations
                     b.Navigation("Leaves");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.Project", b =>
+                {
+                    b.Navigation("EmployeeProjects");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.Client", b =>
                 {
                     b.Navigation("Projects");
@@ -1500,6 +1514,8 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.Employee", b =>
                 {
                     b.Navigation("Attendances");
+
+                    b.Navigation("EmployeeProjects");
 
                     b.Navigation("Leaves");
 

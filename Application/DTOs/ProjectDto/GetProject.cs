@@ -9,9 +9,10 @@ using static DataAccess.Enums.AllEnums;
 
 namespace Application.DTOs.ProjectDto
 {
-    public class CreateProject
+    public class GetProject
     {
-        public string Title { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -19,9 +20,7 @@ namespace Application.DTOs.ProjectDto
         public RateType RateType { get; set; }
         public PriorityType PriorityType { get; set; }
         public int TeamLeaderId { get; set; }
-        //public List<CreateEmployee> Employees { get; set; }
-        public List<int> EmployeeIds { get; set; }
         public int ClientId { get; set; }
-
+        public List<int> EmployeesId { get; set; }
     }
 }

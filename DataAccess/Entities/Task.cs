@@ -11,10 +11,10 @@ namespace DataAccess.Entities
         public Task()
         {
             Employees = new HashSet<Employee>(); 
-            Clients = new HashSet<Client>();
         }
         public string Content { get; set; }
-        public ICollection<Client> Clients { get; set; }
+        public int ClientId { get; set; }
+        public Client Client { get; set; }
         public ICollection<Employee> Employees { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; }

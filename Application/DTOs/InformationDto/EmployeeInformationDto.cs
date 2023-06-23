@@ -20,7 +20,7 @@ namespace Application.DTOs.InformationDto
         public string Birthday { get; set; }
         public string Address { get; set; }
         public bool IsMale { get; set; }
-        public string ImageName { get; set; }
+        
         [NotMapped]
         public IFormFile Image { get; set; }
     }

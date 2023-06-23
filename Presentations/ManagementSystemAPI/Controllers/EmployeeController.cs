@@ -115,14 +115,35 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            string defaultPassword = _configuration["DefaultPassword:PasswordEmployee"];
+            List<Employee> employees = await _unitOfWork.EmployeeRepository.GetAllAsync(null, "Designation", "Department", "Company");
+            List<GetEmployee> employeedto = new List<GetEmployee>();
+            foreach (Employee employee in employees)
             {
-                return StatusCode(200, await _unitOfWork.EmployeeRepository.GetAllAsync(null,"Designation","Department","Company"));
+                employeedto.Add(new GetEmployee()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    Email = employee.Email,
+                    UserName = employee.UserName,
+                    Password = defaultPassword,
+                    DepartmentId = (int)employee.DepartmentId,
+                    DesignationId = (int)employee.DesignationId,
+                    CompanyId = (int)employee.CompanyId,
+                    JoiningDate = employee.JoiningDate,
+
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(employeedto);
+            //try
+            //{
+            //    return StatusCode(200, await _unitOfWork.EmployeeRepository.GetAllAsync(null,"Designation","Department","Company"));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, ex.Message);
+            //}
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)

@@ -1,5 +1,7 @@
 using Application.Concrets;
 using Application.Services.Abstracts;
+using Application.Services.FileServices;
+using DataAccess.Abstracts;
 using DataAccess.DataContext;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,7 +35,7 @@ builder.Services.AddDbContext<ManagementDb>(opt =>
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ManagementDb>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-
+builder.Services.AddTransient<IAzureFileService,AzureFileService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
     opt.TokenValidationParameters = new TokenValidationParameters()

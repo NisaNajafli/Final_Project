@@ -21,7 +21,7 @@ namespace ManagementSystemAPI.Controllers
         {
             try
             {
-                return StatusCode(200,await _unitOfWork.DepartmentRepository.GetAllAsync());
+                return StatusCode(200, await _unitOfWork.DepartmentRepository.GetAllAsync());
             }
             catch (Exception ex)
             {

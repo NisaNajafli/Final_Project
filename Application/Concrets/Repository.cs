@@ -99,5 +99,6 @@ namespace Application.Concrets
             model = entity;
             _context.Set<T>().Update(model);
         }
+      
     }
 }
