@@ -20,14 +20,18 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<LeaveType> types= await _unitOfWork.LeaveTypeRepository.GetAllAsync();
+            List<GetLeaveType> typesdto = new List<GetLeaveType>();
+            foreach (var item in types)
             {
-                return StatusCode(200, await _unitOfWork.LeaveTypeRepository.GetAllAsync(null));
+                typesdto.Add(new GetLeaveType
+                {
+                    Id = item.Id,
+                    TypeName = item.Type,
+                });
             }
-            catch (Exception ex)
-            {
-                return  StatusCode(500, ex.Message);
-            }
+            return Ok(typesdto);
+
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -37,7 +41,8 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
-            return Ok(type);
+            GetLeaveType typedto= new GetLeaveType { Id = id ,TypeName=type.Type};
+            return Ok(typedto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateLeave([FromForm] CreateLeaveType leavedto)

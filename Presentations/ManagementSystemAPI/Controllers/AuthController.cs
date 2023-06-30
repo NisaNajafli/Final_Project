@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.AuthDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,13 @@ namespace ManagementSystemAPI.Controllers
         private readonly UserManager<User> _usermanager;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitofwork;
-
-        public AuthController(UserManager<User> usermanager, IConfiguration configuration, IUnitOfWork unitofwork)
+        private readonly RoleManager<Role> _rolemanager;
+        public AuthController(UserManager<User> usermanager, IConfiguration configuration, IUnitOfWork unitofwork, RoleManager<Role> rolemanager)
         {
             _usermanager = usermanager;
             _configuration = configuration;
             _unitofwork = unitofwork;
+            _rolemanager = rolemanager;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(Register register)
@@ -40,6 +42,15 @@ namespace ManagementSystemAPI.Controllers
             if(!result.Succeeded)
             {
                 return BadRequest(result.Errors);
+            }
+            IdentityResult role = await _usermanager.AddToRoleAsync(user, "User");
+            if (!role.Succeeded)
+            {
+                foreach (IdentityError error in role.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                    return Ok(error);
+                }
             }
             return Ok(new
             {
@@ -68,7 +79,12 @@ namespace ManagementSystemAPI.Controllers
             {
                 new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
             };
+
+            IList<string> roles = await _usermanager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
             string privateKey = _configuration["SecurityToken:securityKey"];
             SecurityKey securityKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
             SigningCredentials signing = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -84,6 +100,23 @@ namespace ManagementSystemAPI.Controllers
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
             });
+        }
+        [HttpPost("create-role")]
+        public async Task<IActionResult> CreateRole()
+        {
+            List<string> roles = new List<string>()
+            {
+                "Admin","Employee","Client","User"
+            };
+
+            foreach (var item in roles)
+            {
+                await _rolemanager.CreateAsync(new Role()
+                {
+                    Name = item
+                });
+            }
+            return Ok();
         }
     }
 }

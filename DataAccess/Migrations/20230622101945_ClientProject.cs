@@ -45,7 +45,7 @@ namespace DataAccess.Migrations
                 column: "ClientId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.NoAction);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Tasks_AspNetUsers_ClientId",
@@ -53,7 +53,7 @@ namespace DataAccess.Migrations
                 column: "ClientId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.NoAction);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Tasks_Projects_ProjectId",
@@ -61,7 +61,7 @@ namespace DataAccess.Migrations
                 column: "ProjectId",
                 principalTable: "Projects",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.NoAction);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

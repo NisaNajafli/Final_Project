@@ -29,7 +29,7 @@ namespace DataAccess.Migrations
                         column: x => x.ProjectsId,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

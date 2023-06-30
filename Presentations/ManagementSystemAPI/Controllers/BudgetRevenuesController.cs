@@ -3,13 +3,16 @@ using Application.DTOs.BudgetRevenuesDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
 using DataAccess.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class BudgetRevenuesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

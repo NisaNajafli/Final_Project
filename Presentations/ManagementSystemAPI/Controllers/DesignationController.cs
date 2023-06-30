@@ -2,6 +2,7 @@
 using Application.DTOs.DesignationDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class DesignationController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

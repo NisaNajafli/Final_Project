@@ -2,13 +2,16 @@
 using DataAccess.Abstracts;
 using DataAccess.DataContext;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class InformationsController : ControllerBase
     {
         private readonly ManagementDb _context;

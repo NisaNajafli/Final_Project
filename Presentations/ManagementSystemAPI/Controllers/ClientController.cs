@@ -4,81 +4,45 @@ using Application.DTOs.LeaveDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
 using DataAccess.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles ="Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class ClientController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         public ClientController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
-            _configuration = configuration;
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
-        //[HttpPost("signin")]
-        //public async Task<IActionResult> SignIn([FromBody] SignInClient clientdto)
-        //{
-        //    string defaultPassword = _configuration["DefaultPassword:PasswordClient"];
-        //    Client client = new Client()
-        //    {
-        //        LastName = clientdto.LastName,
-        //        FirstName = clientdto.FirstName,
-        //        Email = clientdto.Email,
-        //        UserName = clientdto.UserName,
-        //        PhoneNumber = clientdto.PhoneNumber
-        //    };
-        //    IdentityResult result = await _userManager.CreateAsync(client, defaultPassword);
-        //    if (!result.Succeeded)
-        //    {
-        //        return BadRequest(result.Errors);
-        //    }
-        //    Microsoft.AspNetCore.Identity.SignInResult resultsign = await _signInManager.PasswordSignInAsync(client, defaultPassword, false, false);
-        //    if (!resultsign.Succeeded)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    return Ok();
-        //}
-        //[HttpPost("resetpassword")]
-        //public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordClient clientdto)
-        //{
-        //    var client = await _userManager.FindByNameAsync(clientdto.UserName);
-        //    if (client == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var resettoken = await _userManager.GeneratePasswordResetTokenAsync(client);
-        //    var resetResult = await _userManager.ResetPasswordAsync(client, resettoken, clientdto.NewPassword);
-        //    if (!resetResult.Succeeded)
-        //    {
-        //        return BadRequest(resetResult.Errors);
-        //    }
-
-        //    return Ok();
-        //}
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Client> clients = await _unitOfWork.ClientRepository.GetAllAsync(null, "Company");
+            List<GetClient> clientsdto = new List<GetClient>();
+            foreach (Client client in clients)
             {
-                return StatusCode(200, await _unitOfWork.ClientRepository.GetAllAsync(null, "Company"));
+                clientsdto.Add(new GetClient()
+                {
+                    Id = client.Id,
+                    FirstName = client.FirstName,
+                    LastName = client.LastName,
+                    Email = client.Email,
+                    UserName = client.UserName,
+                    CompanyId = (int)client.CompanyId,
+
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(clientsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -88,7 +52,17 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
-            return Ok(client);
+            GetClient clientdto = new GetClient()
+            {
+                Id = client.Id,
+                FirstName = client.FirstName,
+                LastName = client.LastName,
+                Email = client.Email,
+                UserName = client.UserName,
+                CompanyId = (int)client.CompanyId,
+                PhoneNumber = client.PhoneNumber,
+            };
+            return Ok(clientdto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromForm] CreateClient clientdto)
@@ -100,8 +74,7 @@ namespace ManagementSystemAPI.Controllers
                 FirstName = clientdto.FirstName,
                 LastName = clientdto.LastName,
                 Email = clientdto.Email,
-                //Password = clientdto.Password,
-                //ConfirmPassword = clientdto.ConfirmPassword,
+                PhoneNumber = clientdto.PhoneNumber
             };
             _unitOfWork.ClientRepository.Create(client);
             await _unitOfWork.Commit();
@@ -132,8 +105,6 @@ namespace ManagementSystemAPI.Controllers
             client.LastName = clientdto.LastName;
             client.FirstName = clientdto.FirstName;
             client.Email = clientdto.Email;
-            //client.Password = clientdto.Password;
-            //client.ConfirmPassword = clientdto.ConfirmPassword;
             client.PhoneNumber= clientdto.PhoneNumber;
             _unitOfWork.ClientRepository.Update(client, id);
             await _unitOfWork.Commit();

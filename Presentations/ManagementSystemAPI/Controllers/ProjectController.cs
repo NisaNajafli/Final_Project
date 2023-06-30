@@ -5,8 +5,10 @@ using Application.Services.Abstracts;
 using DataAccess.Abstracts;
 using DataAccess.DataContext;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Threading.Tasks;
 using static DataAccess.Enums.AllEnums;
 
@@ -14,6 +16,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class ProjectController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -102,6 +105,7 @@ namespace ManagementSystemAPI.Controllers
             await _unitOfWork.Commit();
             return NoContent();
         }
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProject projectdto)
         {

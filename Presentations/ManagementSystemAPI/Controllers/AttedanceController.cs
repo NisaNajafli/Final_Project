@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.AttedanceDto;
 using DataAccess.DataContext;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin",AuthenticationSchemes ="Bearer")]
+    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class AttedanceController : ControllerBase
     {
         private readonly ManagementDb _context;

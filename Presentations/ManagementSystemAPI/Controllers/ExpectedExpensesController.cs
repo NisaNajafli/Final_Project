@@ -1,13 +1,16 @@
 ﻿using Application.DTOs.ExpectedExpensesDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class ExpectedExpensesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.BudgetDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin",AuthenticationSchemes ="Bearer")]
     public class BudgetController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

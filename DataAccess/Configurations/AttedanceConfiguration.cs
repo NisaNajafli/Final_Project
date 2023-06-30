@@ -17,6 +17,7 @@ namespace DataAccess.Configurations
             builder.ConfigureBaseAuditable();
             builder.ConfigureBaseEntity();
             builder.Property(c=>c.IsPunch).HasDefaultValue(false);
+            builder.HasOne(c=>c.Employee).WithMany(c=>c.Attendances).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.Restrict);  
         }
     }
 }

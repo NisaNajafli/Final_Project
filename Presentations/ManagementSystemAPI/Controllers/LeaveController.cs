@@ -1,14 +1,17 @@
 ﻿using Application.DTOs.LeaveDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System.Data;
 
 namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class LeaveController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -19,14 +22,23 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Leave> leaves = await _unitOfWork.LeaveRepository.GetAllAsync(null, "LeaveType");
+            List<GetLeave> leavesdto = new List<GetLeave>();
+            foreach (Leave leave in leaves)
             {
-                return StatusCode(200,await _unitOfWork.LeaveRepository.GetAllAsync(null));
+                leavesdto.Add(new GetLeave
+                {
+                    Id = leave.Id,
+                    LeaveTypeId = leave.LeaveTypeId,
+                    From = leave.From,
+                    To = leave.To,
+                    Reason = leave.Reason,
+                    Status = leave.Status,
+                    NoOfDays = leave.NoOfDays,
+                    EmployeeId = leave.EmployeeId,
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500,ex.Message);
-            }
+            return Ok(leavesdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -36,7 +48,19 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
-            return Ok(leave);
+            GetLeave leavedto = new GetLeave()
+            {
+                Id = leave.Id,
+                LeaveTypeId = leave.LeaveTypeId,
+                From = leave.From,
+                To = leave.To,
+                Reason = leave.Reason,
+                Status = leave.Status,
+                NoOfDays = leave.NoOfDays,
+                EmployeeId = leave.EmployeeId,
+                
+            };
+            return Ok(leavedto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateLeave([FromForm] CreateLeave leaveDto)
@@ -50,6 +74,7 @@ namespace ManagementSystemAPI.Controllers
                 Status = leaveDto.Status,
                 NoOfDays = leaveDto.NoOfDays,
                 EmployeeId = leaveDto.EmployeeId,
+                
             };
             _unitOfWork.LeaveRepository.Create(leave);
             await _unitOfWork.Commit();

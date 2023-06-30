@@ -16,7 +16,8 @@ namespace DataAccess.Configurations
         {
             builder.ConfigureBaseEntity();
             builder.ConfigureBaseAuditable();
-            builder.HasOne(c=>c.Client).WithMany(c=>c.Projects).HasForeignKey(c=>c.ClientId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(c=>c.Client).WithMany(c=>c.Projects).HasForeignKey(c=>c.ClientId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasMany(c => c.Employees).WithMany(c => c.Projects);
         }
     }
 }
