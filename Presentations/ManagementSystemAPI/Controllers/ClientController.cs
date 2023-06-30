@@ -2,6 +2,7 @@
 using Application.DTOs.EmployeeDto;
 using Application.DTOs.LeaveDto;
 using Application.Services.Abstracts;
+using DataAccess.Abstracts;
 using DataAccess.Entities;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -19,10 +20,12 @@ namespace ManagementSystemAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ClientController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly IAzureFileService _azureFileService;
+        public ClientController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager,IAzureFileService azureFileService)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _azureFileService = azureFileService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -39,6 +42,7 @@ namespace ManagementSystemAPI.Controllers
                     Email = client.Email,
                     UserName = client.UserName,
                     CompanyId = (int)client.CompanyId,
+                    ImageUrl = client.ImageUrl,
 
                 });
             }
@@ -76,6 +80,7 @@ namespace ManagementSystemAPI.Controllers
                 Email = clientdto.Email,
                 PhoneNumber = clientdto.PhoneNumber
             };
+            client.ImageUrl = await _azureFileService.UploadAsync(clientdto.Image);
             _unitOfWork.ClientRepository.Create(client);
             await _unitOfWork.Commit();
             return StatusCode(201);
@@ -106,6 +111,7 @@ namespace ManagementSystemAPI.Controllers
             client.FirstName = clientdto.FirstName;
             client.Email = clientdto.Email;
             client.PhoneNumber= clientdto.PhoneNumber;
+            client.ImageUrl = await _azureFileService.UploadAsync(clientdto.Image);
             _unitOfWork.ClientRepository.Update(client, id);
             await _unitOfWork.Commit();
             return Ok(client);

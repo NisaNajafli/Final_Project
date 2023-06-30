@@ -20,7 +20,7 @@ namespace Application.DTOs.ProjectDto
         public RateType RateType { get; set; }
         public PriorityType PriorityType { get; set; }
         public int TeamLeaderId { get; set; }
-        public int ClientId { get; set; }
+        public int? ClientId { get; set; }
         public List<int> EmployeesId { get; set; }
     }
 }

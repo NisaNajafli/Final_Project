@@ -21,7 +21,7 @@ namespace DataAccess.Entities
             Male,
             Female
         }
-        public string ImageName { get; set; }
+        public string ImageUrl { get; set; }
         //public string FirstName { get; set; }
         //public string LastName { get; set; }
         public string Job { get; set; }
@@ -32,6 +32,7 @@ namespace DataAccess.Entities
         public string Address { get; set; }
         public ICollection<Task> Tasks { get; set; }
         public ICollection<Project> Projects { get; set; }
+       
         [NotMapped]
         public IFormFile Image { get; set; }
         public string Password { get; set; }

@@ -16,7 +16,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class ProjectController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

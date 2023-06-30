@@ -18,7 +18,7 @@ namespace DataAccess.Migrations
                 column: "ClientId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.SetDefault);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

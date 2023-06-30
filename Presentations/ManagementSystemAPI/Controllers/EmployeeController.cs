@@ -13,8 +13,8 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles="Admin",AuthenticationSchemes ="Bearer")]
-   // [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles="Admin",AuthenticationSchemes ="Bearer")]
+   //[Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class EmployeeController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

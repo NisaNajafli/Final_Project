@@ -18,6 +18,7 @@ namespace Application.DTOs.ClientDto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
+        public IFormFile Image { get; set; }
         [EmailAddress]
         public string Email { get; set; }
         //public string? password { get; set; }
