@@ -37,8 +37,11 @@ namespace DataAccess.Entities
         public ICollection<Project> Projects { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        public int? InformationId { get; set; }
-        public Information Information { get; set; }
+        //public string State { get; set; }
+        //public string SSN { get; set; } //Sosyal guvenlik numarasi
+        //public DateTime CreateDateTime { get; set; }
+
+        public ICollection<Payment> Payments { get; set; }
 
     }
 }

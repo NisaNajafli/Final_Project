@@ -20,7 +20,11 @@ namespace ManagementSystemAPI.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// hgfgfg
+        /// </summary>
+        /// <param name="employedto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CheckPunch([FromForm] EmployeeAttedanceDto employedto)
         {

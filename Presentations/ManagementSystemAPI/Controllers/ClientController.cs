@@ -100,7 +100,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateClient clientdto)
         {
-            Client client = _unitOfWork.ClientRepository.Get("Company").FirstOrDefault(i => i.Id == id);
+            Client? client = _unitOfWork.ClientRepository.Get("Company").FirstOrDefault(i => i.Id == id);
             if (client == null)
             {
                 return StatusCode(404);

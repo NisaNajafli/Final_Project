@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.AuthDto;
 using Application.Services.Abstracts;
+using DataAccess.Abstracts.MailService;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,15 +21,17 @@ namespace ManagementSystemAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitofwork;
         private readonly RoleManager<Role> _rolemanager;
-        public AuthController(UserManager<User> usermanager, IConfiguration configuration, IUnitOfWork unitofwork, RoleManager<Role> rolemanager)
+        private readonly IMailService _mailservice;
+        public AuthController(UserManager<User> usermanager, IConfiguration configuration, IUnitOfWork unitofwork, RoleManager<Role> rolemanager,IMailService mailService)
         {
             _usermanager = usermanager;
             _configuration = configuration;
             _unitofwork = unitofwork;
             _rolemanager = rolemanager;
+            _mailservice = mailService;
         }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(Register register)
+        [HttpPost("sign in")]
+        public async Task<IActionResult> SignIn(Register register)
         {
             User user = new User()
             {
@@ -43,15 +46,15 @@ namespace ManagementSystemAPI.Controllers
             {
                 return BadRequest(result.Errors);
             }
-            IdentityResult role = await _usermanager.AddToRoleAsync(user, "User");
-            if (!role.Succeeded)
-            {
-                foreach (IdentityError error in role.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                    return Ok(error);
-                }
-            }
+            //IdentityResult role = await _usermanager.AddToRoleAsync(user, "User");
+            //if (!role.Succeeded)
+            //{
+            //    foreach (IdentityError error in role.Errors)
+            //    {
+            //        ModelState.AddModelError("", error.Description);
+            //        return Ok(error);
+            //    }
+            //}
             return Ok(new
             {
                 user.UserName,
@@ -115,6 +118,41 @@ namespace ManagementSystemAPI.Controllers
                 {
                     Name = item
                 });
+            }
+            return Ok();
+        }
+        [HttpPost("forgotpassword")]
+        public async Task<IActionResult> ForgotPassword([FromForm] ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await _usermanager.FindByEmailAsync(forgotPasswordDto.Email);
+            if (user is null) return BadRequest(new
+            {
+                Message = "Incorrect Email Address"
+            });
+            string token = await _usermanager.GeneratePasswordResetTokenAsync(user);
+            string link = Url.Action("ResetPassword", "Auth", new { UserId = user.Id , token = token},HttpContext.Request.Scheme);
+            await _mailservice.SendEmailMessage(new Application.DTOs.MailRequestDto { ToEmail = forgotPasswordDto.Email, Subject = "ResetPassword", Body = $"<a href={link}/a>"});
+            return Ok(link);
+        }
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetpassword,string UserId, string token)
+        {
+            var user = await _usermanager.FindByIdAsync(UserId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var resetToken = await _usermanager.GeneratePasswordResetTokenAsync(user);
+            var resetResult = await _usermanager.ResetPasswordAsync(user, resetToken, resetpassword.Password);
+            if (!resetResult.Succeeded)
+            {
+                return BadRequest(resetResult.Errors);
+            }
+            bool NewUserPassword = await _usermanager.CheckPasswordAsync(user, resetpassword.Password);
+            if (!NewUserPassword)
+            {
+                return BadRequest();
             }
             return Ok();
         }

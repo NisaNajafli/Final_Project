@@ -13,7 +13,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Information> builder)
         {
-            builder.HasOne(c => c.Employee).WithOne(c => c.Information);
+           
         }
     }
 }

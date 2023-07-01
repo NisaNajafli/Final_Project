@@ -38,10 +38,7 @@ namespace DataAccess.DataContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
-            builder.Entity<Employee>()
-        .HasOne(e => e.Information)
-        .WithOne(i => i.Employee)
-        .HasForeignKey<Employee>(e => e.InformationId);
+           
             base.OnModelCreating(builder);
         }
     }

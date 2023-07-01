@@ -2,6 +2,7 @@ using Application.Concrets;
 using Application.Services.Abstracts;
 using Application.Services.FileServices;
 using DataAccess.Abstracts;
+using DataAccess.Abstracts.MailService;
 using DataAccess.DataContext;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,7 +51,8 @@ builder.Services.AddSwaggerGen(c =>
     }
   });
 });
-
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSender"));
+builder.Services.AddTransient<IMailService,MailService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigins",
