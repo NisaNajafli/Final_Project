@@ -19,14 +19,25 @@ namespace DataAccess.Entities
         {
             get
             {
-                    return (GrossPay*10)/100;
+                    return SocialSecurityTax;
+            }
+            set
+            {
+                value = (GrossPay * 10) / 100;
+                SocialSecurityTax = value;
             }
         }
         public decimal NetPay
         {
             get
             {
-                return GrossPay - SocialSecurityTax;
+                return NetPay;
+            }
+            set
+            {
+                value = GrossPay - SocialSecurityTax;
+                NetPay = value;
+
             }
         } 
         public DateTime CreateDateTime { get; }=DateTime.Now;

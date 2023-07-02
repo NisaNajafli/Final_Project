@@ -1,6 +1,5 @@
 ﻿using Application.DTOs.PaymentDto;
 using Application.Services.Abstracts;
-using Application.Services.PaymentService;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,8 +57,6 @@ namespace ManagementSystemAPI.Controllers
                 PaymentPeriodFrom = payment.PaymentPeriodFrom,
                 PaymentPeriodTo = payment.PaymentPeriodTo,
                 EmployeeId = payment.EmployeeId,
-                NetPay = payment.NetPay,
-                SocialSecurityTax = payment.SocialSecurityTax,
             };
             return Ok(getPaymentDto);
         }
