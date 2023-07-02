@@ -49,7 +49,6 @@ namespace Application.Services.PaymentService
 
         public async Task CreatePayment(Payment payment)
         {
-            payment.CreateDateTime = DateTime.Now;
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
         }
