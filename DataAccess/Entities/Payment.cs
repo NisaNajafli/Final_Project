@@ -10,18 +10,25 @@ namespace DataAccess.Entities
 {
     public class Payment:BaseEntity
     {
-        //public int EmployeeId { get; set; }
-        //public  Employee Employee { get; set; }
-        //public decimal GrossPay { get; set; } //Vergisiz odenilen mebleg
-        //public DateTime PaymentPeriodFrom { get; set; } //Ne vaxtdan
-        //public DateTime PaymentPeriodTo { get; set; } //Ne vaxta
-        //public decimal FedTax { get; set; } //Federal Tax
-        //public decimal StateTax { get; set; }  //Bolgesel Tax
-        //public decimal SocialSecurityTax { get; set; } //sosyla guvenlik vergisi
-                                                      
-        //public decimal Insurance { get; set; } //sigorta miqdari
-                                              
-        //public decimal NetPay { get; set; } //Odenilen mebleg
-        //public DateTime CreateDateTime { get; set; }
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+        public decimal GrossPay { get; set; } //Vergisiz odenilen mebleg
+        public DateTime PaymentPeriodFrom { get; set; } //Ne vaxtdan
+        public DateTime PaymentPeriodTo { get; set; } //Ne vaxta
+        public decimal SocialSecurityTax
+        {
+            get
+            {
+                    return (GrossPay*10)/100;
+            }
+        }
+        public decimal NetPay
+        {
+            get
+            {
+                return GrossPay - SocialSecurityTax;
+            }
+        } 
+        public DateTime CreateDateTime { get; }=DateTime.Now;
     }
 }

@@ -34,6 +34,7 @@ namespace DataAccess.DataContext
         public DbSet<Leave> Leaves { get; set; }
         public DbSet<Tax> Taxs { get; set; }
         public DbSet<Information> Informations { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

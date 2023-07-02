@@ -74,7 +74,7 @@ namespace ManagementSystemAPI.Controllers
                     DesignationId = (int)employee.DesignationId,
                     CompanyId = (int)employee.CompanyId,
                     JoiningDate = employee.JoiningDate,
-
+                    Payments= employee.Payments.Where(c=>c.EmployeeId==employee.Id).ToList(),
                 });
             }
             return Ok(employeedto);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,5 +23,6 @@ namespace Application.DTOs.EmployeeDto
         public int DesignationId { get; set; }
         public int DepartmentId { get; set; }
         public int CompanyId { get; set; }
+        public ICollection<Payment> Payments { get; set; }
     }
 }

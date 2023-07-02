@@ -109,7 +109,7 @@ namespace ManagementSystemAPI.Controllers
         {
             List<string> roles = new List<string>()
             {
-                "Admin","Employee","Client","User"
+                "Admin","Employee","Client"
             };
 
             foreach (var item in roles)
