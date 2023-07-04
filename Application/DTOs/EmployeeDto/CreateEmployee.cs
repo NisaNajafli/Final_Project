@@ -1,4 +1,5 @@
 ﻿using DataAccess.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,9 +19,10 @@ namespace Application.DTOs.EmployeeDto
         //[Compare(nameof(Password))]
         //public string ConfirmPassword { get; set; }
         public string UserName { get; set; }
-        public DateTime JoiningDate { get; set; } = DateTime.UtcNow;
+        public DateTime JoiningDate = DateTime.UtcNow;
         public int DesignationId { get; set; }
         public int DepartmentId { get; set; }
         public int CompanyId { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

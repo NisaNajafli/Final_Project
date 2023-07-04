@@ -9,7 +9,6 @@ namespace Application.DTOs.BudgetDto
 {
     public class UpdateBudget
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public int CategoryId { get; set; }
         public DateTime StartDate { get; set; }

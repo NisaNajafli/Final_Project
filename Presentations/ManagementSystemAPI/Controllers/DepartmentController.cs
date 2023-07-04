@@ -1,4 +1,5 @@
-﻿using Application.DTOs.DepartmentDto;
+﻿using Application.DTOs.ClientDto;
+using Application.DTOs.DepartmentDto;
 using Application.DTOs.LeaveDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
@@ -11,7 +12,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class DepartmentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -22,14 +23,18 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Department> departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
+            List<GetDepartmentDto> departmentsdto = new List<GetDepartmentDto>();
+            foreach (Department department in departments)
             {
-                return StatusCode(200, await _unitOfWork.DepartmentRepository.GetAllAsync());
+                departmentsdto.Add(new GetDepartmentDto()
+                {
+                    Id = department.Id,
+                    Name = department.Name,
+
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(departmentsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -39,7 +44,12 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
-            return Ok(department);
+            GetDepartmentDto departmentDto = new GetDepartmentDto()
+            {
+                Id = department.Id,
+                Name = department.Name,
+            };
+            return Ok(departmentDto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromForm] CreateDepartment departmentdto)
@@ -72,10 +82,11 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
+            department.Id = id;
             department.Name = departmentdto.Name;
             _unitOfWork.DepartmentRepository.Update(department, id);
             await _unitOfWork.Commit();
-            return Ok(department);
+            return StatusCode(201);
         }
 
     }

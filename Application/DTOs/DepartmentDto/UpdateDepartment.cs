@@ -9,7 +9,7 @@ namespace Application.DTOs.DepartmentDto
 {
     public class UpdateDepartment
     {
-        public int Id { get; set; }
+      
         public string Name { get; set; }
     }
 }

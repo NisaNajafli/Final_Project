@@ -1,6 +1,8 @@
-﻿using Application.DTOs.BudgetExpensesDto;
+﻿using Application.DTOs.BudgetDto;
+using Application.DTOs.BudgetExpensesDto;
 using Application.DTOs.ExpectedExpensesDto;
 using Application.Services.Abstracts;
+using DataAccess.Abstracts;
 using DataAccess.Entities;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -12,36 +14,52 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+   // [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class BudgetExpensesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAzureFileService _azureFileService;
 
-        public BudgetExpensesController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public BudgetExpensesController(IUnitOfWork unitOfWork, IAzureFileService azureFileService)
         {
             _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHostEnvironment;
+            _azureFileService = azureFileService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<BudgetExpenses> budgets = await _unitOfWork.BudgetExpensesRepository.GetAllAsync();
+            List<GetDto> budgetsdto = new List<GetDto>();
+            foreach (BudgetExpenses budget in budgets)
             {
-                return StatusCode(200, await _unitOfWork.BudgetExpensesRepository.GetAllAsync(null, "Company"));
+                budgetsdto.Add(new GetDto()
+                {
+                    Id = budget.Id,
+                    Amount = budget.Amount,
+                    CompanyId = budget.CompanyId,
+                    ExpenseDate= budget.ExpenseDate,
+                    Notes = budget.Notes,
+                    FileUrl=budget.FileName
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(budgetsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            BudgetExpenses expenses = await _unitOfWork.BudgetExpensesRepository.GetById(id);
-            if (expenses == null) return StatusCode(404);
-            return Ok(expenses);
+            BudgetExpenses budget = await _unitOfWork.BudgetExpensesRepository.GetById(id);
+            if (budget == null) return StatusCode(404);
+            GetDto dto = new GetDto()
+            {
+                Id = budget.Id,
+                Amount = budget.Amount,
+                CompanyId = budget.CompanyId,
+                ExpenseDate = budget.ExpenseDate,
+                Notes = budget.Notes,
+                FileUrl = budget.FileName,
+            };
+            return Ok(dto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateExpense([FromForm] CreateBudgetExpenses expensedto)
@@ -53,15 +71,8 @@ namespace ManagementSystemAPI.Controllers
                 CompanyId = expensedto.CompanyId,
                 Notes = expensedto.Notes,
             };
-            if (!expensedto.AttachFile.CheckSize(2048) && !expensedto.AttachFile.CheckType("image/"))
-            {
-                return BadRequest(new
-                {
-                    Message = "Size or type incorrect"
-                });
-            }
-           // string FileName = await expensedto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
-            //expense.FileName = FileName;
+            
+            expense.FileName = await _azureFileService.UploadAsync(expensedto.AttachFile);
             _unitOfWork.BudgetExpensesRepository.Create(expense);
             await _unitOfWork.Commit();
             return StatusCode(201);
@@ -72,41 +83,23 @@ namespace ManagementSystemAPI.Controllers
 
             BudgetExpenses expenses = await _unitOfWork.BudgetExpensesRepository.GetById(id);
             if (expenses == null) return StatusCode(404);
-            string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "files", expenses.FileName);
-            if (System.IO.File.Exists(path))
-            {
-                System.IO.File.Delete(path);
-            };
             _unitOfWork.BudgetExpensesRepository.Delete(id);
             await _unitOfWork.Commit();
             return NoContent();
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExpense([FromRoute] int id, [FromBody] UpdateBudgetExpenses expensedto)
+        public async Task<IActionResult> UpdateExpense([FromRoute] int id, [FromForm] UpdateBudgetExpenses expensedto)
         {
 
             BudgetExpenses expenses = await _unitOfWork.BudgetExpensesRepository.GetById(id);
             if (expenses == null) return StatusCode(404);
             if (expensedto.AttachFile != null)
             {
-                string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "files", expenses.FileName);
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                };
-                if (!expensedto.AttachFile.CheckSize(2048) && !expensedto.AttachFile.CheckType("/image"))
-                {
-                    return BadRequest(new
-                    {
-                        Message = "Size or type incorrect"
-                    });
-                }
-                string FileName = await expensedto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
-                expenses.FileName = FileName;
+                expenses.FileName = await _azureFileService.UploadAsync(expensedto.AttachFile);
             }
             _unitOfWork.BudgetExpensesRepository.Update(expenses, id);
             await _unitOfWork.Commit();
-            return StatusCode(200, expenses);
+            return StatusCode(200);
         }
     }
 }

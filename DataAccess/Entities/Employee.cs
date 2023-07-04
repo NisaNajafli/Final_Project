@@ -17,6 +17,7 @@ namespace DataAccess.Entities
             Tickets = new HashSet<Ticket>();
             Leaves = new HashSet<Leave>();
             Projects = new HashSet<Project>();
+            Payments= new HashSet<Payment>();
         }
 
         public int? DesignationId { get; set; }
@@ -38,6 +39,9 @@ namespace DataAccess.Entities
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public ICollection<Payment> Payments { get; set; }
+        public string ImageUrl { get; set; }
+        [NotMapped]
+        public IFormFile Image { get; set; }
 
     }
 }

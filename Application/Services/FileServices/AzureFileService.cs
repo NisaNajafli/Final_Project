@@ -37,8 +37,16 @@ public class AzureFileService:IAzureFileService
         return client.Uri.AbsoluteUri;
     }
 
+    public async Task DeleteAsync(string blobUri)
+    {
+        Uri uri = new Uri(blobUri);
+        BlobContainerClient container = new BlobContainerClient(_storageConnectionString, _storageContainerName);
+        BlobClient client = container.GetBlobClient(uri.Segments.Last());
 
-
-
-
+        // Delete the blob
+        await client.DeleteAsync();
     }
+
+
+
+}

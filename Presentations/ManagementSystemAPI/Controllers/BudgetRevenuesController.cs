@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.BudgetExpensesDto;
 using Application.DTOs.BudgetRevenuesDto;
 using Application.Services.Abstracts;
+using Application.Services.FileServices;
+using DataAccess.Abstracts;
 using DataAccess.Entities;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -12,36 +14,52 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+   // [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class BudgetRevenuesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAzureFileService _fileService;
 
-        public BudgetRevenuesController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public BudgetRevenuesController(IUnitOfWork unitOfWork, IAzureFileService fileService)
         {
             _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<BudgetRevenues> budgets = await _unitOfWork.BudgetRevenuesRepository.GetAllAsync();
+            List<GetDtoRevenues> budgetsdto = new List<GetDtoRevenues>();
+            foreach (BudgetRevenues budget in budgets)
             {
-                return StatusCode(200, await _unitOfWork.BudgetRevenuesRepository.GetAllAsync(null, "Company"));
+                budgetsdto.Add(new GetDtoRevenues()
+                {
+                    Id = budget.Id,
+                    Amount = budget.Amount,
+                    CompanyId = budget.CompanyId,
+                    RevenueDate = budget.RevenueDate,
+                    Notes = budget.Notes,
+                    FileUrl = budget.FileName
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(budgetsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             BudgetRevenues revenues = await _unitOfWork.BudgetRevenuesRepository.GetById(id);
             if (revenues == null) return StatusCode(404);
-            return Ok(revenues);
+            GetDtoRevenues dto = new GetDtoRevenues()
+            {
+                Id = revenues.Id,
+                Amount = revenues.Amount,
+                CompanyId = revenues.CompanyId,
+                RevenueDate = revenues.RevenueDate,
+                Notes = revenues.Notes,
+                FileUrl = revenues.FileName,
+            };
+            return Ok(dto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateRevenues([FromForm] CreateBudgetRevenues revenuesdto)
@@ -53,15 +71,8 @@ namespace ManagementSystemAPI.Controllers
                 CompanyId = revenuesdto.CompanyId,
                 Notes = revenuesdto.Notes,
             };
-            if (!revenuesdto.AttachFile.CheckSize(2048) && !revenuesdto.AttachFile.CheckType("/image"))
-            {
-                return BadRequest(new
-                {
-                    Message = "Size or type incorrect"
-                });
-            }
-            string FileName = await revenuesdto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
-            revenues.FileName = FileName;
+           
+            revenues.FileName = await _fileService.UploadAsync(revenuesdto.AttachFile);
             _unitOfWork.BudgetRevenuesRepository.Create(revenues);
             await _unitOfWork.Commit();
             return StatusCode(201);
@@ -72,41 +83,26 @@ namespace ManagementSystemAPI.Controllers
 
             BudgetRevenues revenues = await _unitOfWork.BudgetRevenuesRepository.GetById(id);
             if (revenues == null) return StatusCode(404);
-            string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "files", revenues.FileName);
-            if (System.IO.File.Exists(path))
-            {
-                System.IO.File.Delete(path);
-            };
+            await _fileService.DeleteAsync(revenues.FileName);
             _unitOfWork.BudgetRevenuesRepository.Delete(id);
             await _unitOfWork.Commit();
             return NoContent();
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRevenues([FromRoute] int id, [FromBody] UpdateBudgetRevenues revenuesdto)
+        public async Task<IActionResult> UpdateRevenues([FromRoute] int id, [FromForm] UpdateBudgetRevenues revenuesdto)
         {
 
             BudgetRevenues revenues = await _unitOfWork.BudgetRevenuesRepository.GetById(id);
             if (revenues == null) return StatusCode(404);
             if (revenuesdto.AttachFile != null)
             {
-                string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "files", revenues.FileName);
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                };
-                if (!revenuesdto.AttachFile.CheckSize(2048) && !revenuesdto.AttachFile.CheckType("/image"))
-                {
-                    return BadRequest(new
-                    {
-                        Message = "Size or type incorrect"
-                    });
-                }
-                string FileName = await revenuesdto.AttachFile.Upload(_webHostEnvironment.WebRootPath, "img", "files");
-                revenues.FileName = FileName;
+                await _fileService.DeleteAsync(revenuesdto.AttachFile.FileName);
+                await _unitOfWork.Commit();
+                revenues.FileName = await _fileService.UploadAsync(revenuesdto.AttachFile);
             }
             _unitOfWork.BudgetRevenuesRepository.Update(revenues, id);
             await _unitOfWork.Commit();
-            return StatusCode(200, revenues);
+            return StatusCode(200);
         }
     }
 }

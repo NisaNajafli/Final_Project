@@ -11,7 +11,7 @@ namespace ManagementSystemAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize(Roles = "Admin",AuthenticationSchemes ="Bearer")]
-    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class AttedanceController : ControllerBase
     {
         private readonly ManagementDb _context;
@@ -20,11 +20,6 @@ namespace ManagementSystemAPI.Controllers
         {
             _context = context;
         }
-        /// <summary>
-        /// hgfgfg
-        /// </summary>
-        /// <param name="employedto"></param>
-        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CheckPunch([FromForm] EmployeeAttedanceDto employedto)
         {
@@ -32,11 +27,11 @@ namespace ManagementSystemAPI.Controllers
             {
                 EmployeeId = employedto.EmployeeID,
                 IsPunch = employedto.IsPunch,
-                Date=DateTime.Now,
+                Date = DateTime.Now,
             };
             _context.EmployeesAttedances.Add(employee);
             await _context.SaveChangesAsync();
-            return Ok(employee);
+            return Ok();
         }
     }
 }

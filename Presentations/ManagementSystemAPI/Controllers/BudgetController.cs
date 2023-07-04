@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.BudgetDto;
+using Application.DTOs.ClientDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin",AuthenticationSchemes ="Bearer")]
+    //[Authorize(Roles ="Admin",AuthenticationSchemes ="Bearer")]
     public class BudgetController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,21 +22,39 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Budget> budgets = await _unitOfWork.BudgetRepository.GetAllAsync(null, "ExpectedExpenses", "ExpectedRevenues");
+            List<GetBudgetDto> budgetsdto = new List<GetBudgetDto>();
+            foreach (Budget budget in budgets)
             {
-                return StatusCode(200, await _unitOfWork.BudgetRepository.GetAllAsync(null, "ExpectedExpenses", "ExpectedRevenues"));
+                budgetsdto.Add(new GetBudgetDto()
+                {
+                    Id = budget.Id,
+                    Title = budget.Title,
+                    TaxAmount=budget.Tax,
+                    StartDate=budget.StartDate,
+                    EndDate=budget.EndDate,
+                    TotalExpenses=budget.ExpectedExpenses.Sum(c=>c.Amount),
+                    TotalRevenues=budget.ExpectedRevenues.Sum(c=>c.Amount),
+                });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(budgetsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             Budget budget = await _unitOfWork.BudgetRepository.GetById(id);
             if (budget == null) return NotFound();
-            return Ok(budget);
+            GetBudgetDto dto = new GetBudgetDto()
+            {
+                Id = budget.Id,
+                Title = budget.Title,
+                TaxAmount = budget.Tax,
+                StartDate = budget.StartDate,
+                EndDate = budget.EndDate,
+                TotalExpenses = budget.ExpectedExpenses.Sum(c => c.Amount),
+                TotalRevenues = budget.ExpectedRevenues.Sum(c => c.Amount),
+            };
+            return Ok(dto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateBudget([FromForm] CreateBudget budgetdto)
@@ -46,13 +65,12 @@ namespace ManagementSystemAPI.Controllers
                 StartDate = budgetdto.StartDate,
                 EndDate = budgetdto.EndDate,
                 Tax = budgetdto.TaxAmount,
-
                 //ExpectedExpenses = budgetdto.ExpectedExpenses.Select(c => new ExpectedExpenses { Amount = c.Amount }).ToList(),nnnnnn
                 //ExpectedRevenues = budgetdto.ExpectedRevenues.Select(c => new ExpectedRevenues { Amount = c.Amount }).ToList(),
             };
             _unitOfWork.BudgetRepository.Create(budget);
             await _unitOfWork.Commit();
-            return StatusCode(200, budget);
+            return StatusCode(200);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBudget([FromRoute] int id, [FromBody] UpdateBudget budgetdto)
@@ -79,6 +97,16 @@ namespace ManagementSystemAPI.Controllers
             _unitOfWork.BudgetRepository.Update(budget, id);
             await _unitOfWork.Commit();
             return Ok(budget);
+            
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBudget([FromRoute] int id)
+        {
+            Budget budget = await _unitOfWork.BudgetRepository.GetById(id);
+            if (budget == null) return NotFound();
+            _unitOfWork.BudgetRepository.Delete(id);
+            await _unitOfWork.Commit();
+            return NoContent();
         }
     }
 }

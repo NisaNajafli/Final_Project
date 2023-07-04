@@ -13,10 +13,6 @@ namespace DataAccess.Entities
             Employees = new HashSet<Employee>(); 
         }
         public string Content { get; set; }
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
-        public ICollection<Employee> Employees { get; set; }
-        public int ProjectId { get; set; }
-        public Project Project { get; set; }
+        public ICollection<Employee>? Employees { get; set; }
     }
 }

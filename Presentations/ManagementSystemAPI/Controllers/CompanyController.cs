@@ -12,7 +12,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class CompanyController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -23,14 +23,18 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Company> companies = await _unitOfWork.CompanyRepository.GetAllAsync();
+            List<GetCompanyDto> companyDtos = new List<GetCompanyDto>();
+            foreach (Company company in companies)
             {
-                return StatusCode(200, await _unitOfWork.CompanyRepository.GetAllAsync(null));
+                companyDtos.Add(new GetCompanyDto()
+                {
+                    Id = company.Id,
+                    Name = company.Name,
+
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(companyDtos);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -40,7 +44,12 @@ namespace ManagementSystemAPI.Controllers
             {
                 return StatusCode(404);
             }
-            return Ok(company);
+            GetCompanyDto companydto = new GetCompanyDto()
+            {
+                Id = company.Id,
+                Name = company.Name,
+            };
+            return Ok(companydto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromForm] CreateCompany companydto)

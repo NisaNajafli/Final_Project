@@ -1,6 +1,7 @@
 using Application.Concrets;
 using Application.Services.Abstracts;
 using Application.Services.FileServices;
+using Application.Services.SearchService;
 using DataAccess.Abstracts;
 using DataAccess.Abstracts.MailService;
 using DataAccess.DataContext;
@@ -52,8 +53,11 @@ builder.Services.AddSwaggerGen(c =>
     }
   });
 });
+builder.Services.AddControllers()
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSender"));
 builder.Services.AddTransient<IMailService,MailService>();
+builder.Services.AddTransient<ISearchService,SearchService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigins",

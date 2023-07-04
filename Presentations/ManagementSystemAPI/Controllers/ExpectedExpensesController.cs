@@ -10,7 +10,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+   // [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class ExpectedExpensesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -23,20 +23,32 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<ExpectedExpenses> expenses =await _unitOfWork.ExpectedExpensesRepository.GetAllAsync(null, "Budget");
+            List<GetExpenseDto> expenseDtos = new List<GetExpenseDto>();
+            foreach (ExpectedExpenses expense in expenses)
             {
-                return StatusCode(200, await _unitOfWork.ExpectedExpensesRepository.GetAllAsync());
+                expenseDtos.Add(new GetExpenseDto()
+                {
+                    Id = expense.Id,
+                    BudgetId = expense.BudgetId,
+                    Amount = expense.Amount,
+                    Title = expense.Title,
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(expenseDtos);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            ExpectedExpenses expenses = await _unitOfWork.ExpectedExpensesRepository.GetById(id);
-            if (expenses == null) return StatusCode(404);
+            ExpectedExpenses expense = await _unitOfWork.ExpectedExpensesRepository.GetById(id);
+            if (expense == null) return StatusCode(404);
+            GetExpenseDto expenses = new GetExpenseDto()
+            {
+                Id = expense.Id,
+                BudgetId = expense.BudgetId,
+                Amount = expense.Amount,
+                Title = expense.Title,
+            };
             return Ok(expenses);
         }
         [HttpPost]
@@ -74,7 +86,7 @@ namespace ManagementSystemAPI.Controllers
             expenses.Amount= expensedto.Amount;
             _unitOfWork.ExpectedExpensesRepository.Update(expenses, id);
             await _unitOfWork.Commit();
-            return StatusCode(200, expenses);
+            return StatusCode(200);
         }
     }
 }

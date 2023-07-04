@@ -38,7 +38,7 @@ namespace Application.Concrets
         private IBudgetExpensesRepository _budgetExpensesRepository;
         private IBudgetRevenuesRepository _budgetRevenuesRepository;
         private ITaxRepository _taxRepository;
-        private IPaymentReposıtory _paymentRepository;
+        private IPaymentRepository _paymentRepository;
  
 
 
@@ -59,7 +59,7 @@ namespace Application.Concrets
         public IBudgetRevenuesRepository BudgetRevenuesRepository => _budgetRevenuesRepository ??= new BudgetRevenuesRepository(_context);
         public IBudgetExpensesRepository BudgetExpensesRepository => _budgetExpensesRepository ??= new BudgetExpensesRepository(_context) ;
         public ITaxRepository TaxRepository => _taxRepository ??= new TaxRepository(_context);
-        public IPaymentReposıtory PaymentReposıtory => _paymentRepository ??= new PaymentRepository(_context);
+        public IPaymentRepository PaymentRepository => _paymentRepository ??= new PaymentRepository(_context);
     
 
         public Task Commit()

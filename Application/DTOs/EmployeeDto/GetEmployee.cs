@@ -23,6 +23,8 @@ namespace Application.DTOs.EmployeeDto
         public int DesignationId { get; set; }
         public int DepartmentId { get; set; }
         public int CompanyId { get; set; }
-        public ICollection<Payment> Payments { get; set; }
+        public decimal Payments { get; set; } 
+        public string ImageUrl { get; set; }
+
     }
 }

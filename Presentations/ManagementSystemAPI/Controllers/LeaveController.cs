@@ -11,7 +11,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
+   // [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class LeaveController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -36,6 +36,7 @@ namespace ManagementSystemAPI.Controllers
                     Status = leave.Status,
                     NoOfDays = leave.NoOfDays,
                     EmployeeId = leave.EmployeeId,
+                    LeaveName=leave.LeaveType.Type,
                 });
             }
             return Ok(leavesdto);
@@ -43,7 +44,7 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Leave leave = await _unitOfWork.LeaveRepository.GetById(id);
+            Leave leave =  _unitOfWork.LeaveRepository.Get("LeaveType").FirstOrDefault(c=>c.Id==id);
             if(leave == null)
             {
                 return StatusCode(404);
@@ -58,7 +59,7 @@ namespace ManagementSystemAPI.Controllers
                 Status = leave.Status,
                 NoOfDays = leave.NoOfDays,
                 EmployeeId = leave.EmployeeId,
-                
+                LeaveName = leave.LeaveType.Type,
             };
             return Ok(leavedto);
         }

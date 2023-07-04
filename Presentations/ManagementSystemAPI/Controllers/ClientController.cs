@@ -43,7 +43,7 @@ namespace ManagementSystemAPI.Controllers
                     UserName = client.UserName,
                     CompanyId = (int)client.CompanyId,
                     ImageUrl = client.ImageUrl,
-
+                    PhoneNumber = client.PhoneNumber,
                 });
             }
             return Ok(clientsdto);
@@ -98,7 +98,7 @@ namespace ManagementSystemAPI.Controllers
             return NoContent();
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateClient clientdto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] UpdateClient clientdto)
         {
             Client? client = _unitOfWork.ClientRepository.Get("Company").FirstOrDefault(i => i.Id == id);
             if (client == null)
@@ -114,7 +114,7 @@ namespace ManagementSystemAPI.Controllers
             client.ImageUrl = await _azureFileService.UploadAsync(clientdto.Image);
             _unitOfWork.ClientRepository.Update(client, id);
             await _unitOfWork.Commit();
-            return Ok(client);
+            return Ok();
         }
 
     }

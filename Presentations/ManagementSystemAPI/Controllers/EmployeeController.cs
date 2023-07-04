@@ -1,10 +1,14 @@
-﻿using Application.DTOs.EmployeeDto;
+﻿using Application.DTOs.AuthDto;
+using Application.DTOs.EmployeeDto;
 using Application.Services.Abstracts;
+using DataAccess.Abstracts;
+using DataAccess.Abstracts.MailService;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -20,45 +24,27 @@ namespace ManagementSystemAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;   
-        public EmployeeController(IUnitOfWork unitOfWork, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly SignInManager<User> _signInManager;
+        private readonly IMailService _mailService;
+        private readonly IAzureFileService _azureFileService;
+        public EmployeeController(IUnitOfWork unitOfWork, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager,IMailService mailService, IAzureFileService azureFileService)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
+            _mailService = mailService;
+            _azureFileService = azureFileService;
         }
 
         
 
-        [HttpPost("resetpassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordEmployee employee)
-        {
-            Employee employee1 = (Employee)await _userManager.FindByNameAsync(employee.UserName);
-            if (employee1 == null)
-            {
-                return NotFound();
-            }
-
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(employee1);
-            var resetResult = await _userManager.ResetPasswordAsync(employee1, resetToken, employee.NewPassword);
-            if (!resetResult.Succeeded)
-            {
-                return BadRequest(resetResult.Errors);
-            }
-            employee1.Password=employee.NewPassword;
-            bool NewUserPassword = await _userManager.CheckPasswordAsync(employee1, employee.NewPassword);
-            if (!NewUserPassword)
-            {
-                return BadRequest();
-            }
-            return Ok();
-        }
+       
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             string defaultPassword = _configuration["DefaultPassword:PasswordEmployee"];
-            List<Employee> employees = await _unitOfWork.EmployeeRepository.GetAllAsync(null, "Designation", "Department", "Company");
+            List<Employee> employees = await _unitOfWork.EmployeeRepository.GetAllAsync(null, "Designation", "Department", "Company","Payments");
             List<GetEmployee> employeedto = new List<GetEmployee>();
             foreach (Employee employee in employees)
             {
@@ -74,7 +60,8 @@ namespace ManagementSystemAPI.Controllers
                     DesignationId = (int)employee.DesignationId,
                     CompanyId = (int)employee.CompanyId,
                     JoiningDate = employee.JoiningDate,
-                    Payments= employee.Payments.Where(c=>c.EmployeeId==employee.Id).ToList(),
+                    Payments= employee.Payments.Sum(c=>c.NetPay),
+                    ImageUrl = employee.ImageUrl,
                 });
             }
             return Ok(employeedto);
@@ -107,6 +94,7 @@ namespace ManagementSystemAPI.Controllers
                 DepartmentId = (int)employee.DepartmentId,
                 DesignationId = (int)employee.DesignationId,
                 CompanyId = (int)employee.CompanyId,
+                ImageUrl = employee.ImageUrl,
                 Id = employee.Id,
             };
             return Ok(employeedto);
@@ -121,13 +109,13 @@ namespace ManagementSystemAPI.Controllers
                 DesignationId = employeedto.DesignationId,
                 DepartmentId = employeedto.DepartmentId,
                 CompanyId = employeedto.CompanyId,
-                JoiningDate=employeedto.JoiningDate,
                 FirstName = employeedto.FirstName,
                 LastName = employeedto.LastName,
                 Email = employeedto.Email,
                 Password = defaultPassword
                 //ConfirmPassword = employeedto.ConfirmPassword,
             };
+            employee.ImageUrl = await _azureFileService.UploadAsync(employeedto.Image);
             IdentityResult result = await _userManager.CreateAsync(employee, employee.Password);
             if (!result.Succeeded)
             {
@@ -151,7 +139,10 @@ namespace ManagementSystemAPI.Controllers
             //}
             //_unitOfWork.EmployeeRepository.Create(employee);
             //await _unitOfWork.Commit();
-            return StatusCode(201);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(employee);
+            string link = Url.Action("CreateEmployee","Employee",new { UserId = employee.Id, token = token },HttpContext.Request.Scheme);
+            await _mailService.SendEmailMessage(new Application.DTOs.MailRequestDto { ToEmail = employee.Email,Subject="ResetPassword",Body=link });
+            return Ok(link);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee([FromRoute] int id)
@@ -182,7 +173,7 @@ namespace ManagementSystemAPI.Controllers
             employee.Email= employeedto.Email;
             employee.Password= employeedto.Password;
             employee.ConfirmPassword= employeedto.ConfirmPassword;
-            employee.JoiningDate= employeedto.JoiningDate;
+            employee.ImageUrl = await _azureFileService.UploadAsync(employeedto.Image);
             _unitOfWork.EmployeeRepository.Update(employee, id);
             await _unitOfWork.Commit();
             return Ok(employee);

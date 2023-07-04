@@ -723,7 +723,7 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -748,9 +748,6 @@ namespace DataAccess.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -762,8 +759,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("Tasks");
                 });
@@ -1120,37 +1115,18 @@ namespace DataAccess.Migrations
                 {
                     b.HasBaseType("DataAccess.Entities.User");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Brithday")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int")
                         .HasColumnName("Client_CompanyId");
 
-                    b.Property<string>("ConfirmPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Client_ConfirmPassword");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Client_ImageUrl");
 
                     b.Property<string>("Job")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Client_Password");
 
                     b.HasIndex("CompanyId");
 
@@ -1176,6 +1152,10 @@ namespace DataAccess.Migrations
                     b.Property<int?>("DesignationId")
                         .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("JoiningDate")
                         .HasColumnType("datetime2");
@@ -1220,7 +1200,7 @@ namespace DataAccess.Migrations
                     b.HasOne("DataAccess.Entities.Department", "Department")
                         .WithMany("Designations")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -1332,21 +1312,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Task", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Client", "Client")
+                    b.HasOne("DataAccess.Entities.Client", null)
                         .WithMany("Tasks")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Project");
+                        .HasForeignKey("ClientId");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Ticket", b =>
@@ -1469,7 +1437,7 @@ namespace DataAccess.Migrations
                     b.HasOne("DataAccess.Entities.Company", "Company")
                         .WithMany("Clients")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -1480,19 +1448,19 @@ namespace DataAccess.Migrations
                     b.HasOne("DataAccess.Entities.Company", "Company")
                         .WithMany("Employees")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Entities.Designation", "Designation")
                         .WithMany("Employees")
                         .HasForeignKey("DesignationId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Company");

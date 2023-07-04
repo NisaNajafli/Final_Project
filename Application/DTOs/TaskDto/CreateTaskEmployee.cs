@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.TaskDto
 {
-    public class CreateTask
+    public class CreateTaskEmployee
     {
         public string Content { get; set; }
-        public int ProjectId { get; set; }
+        public List<int>? EmployeeIds { get; set; }
+
     }
 }

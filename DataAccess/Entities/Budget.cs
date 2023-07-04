@@ -17,21 +17,25 @@ namespace DataAccess.Entities
         public string Title { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public decimal TotalRevenue
-        {
-            get
-            {
-                if (ExpectedRevenues != null) return ExpectedRevenues.Sum(e => e.Amount);
-                else return 0;
-            }
-        }
-        public decimal TotalExpenses {
-            get
-            {
-                if (ExpectedExpenses != null) return ExpectedExpenses.Sum(e => e.Amount);
-                else return 0;
-            }
-        }
+
+        //public decimal TotalRevenue
+        //{
+        //    get
+        //    {
+        //        if (ExpectedRevenues != null) return ExpectedRevenues.Sum(e => e.Amount);
+        //        else return 0;
+        //    }
+        //}
+        //public decimal TotalExpenses
+        //{
+        //    get
+        //    {
+        //        if (ExpectedExpenses != null) return ExpectedExpenses.Sum(e => e.Amount);
+        //        else return 0;
+        //    }
+        //}
+        //public decimal? TotalRevenue { get; set; }
+        //public decimal? TotalExpenses { get; set; }
         public decimal Amount { get; set; }
         public ICollection<ExpectedExpenses> ExpectedExpenses { get; set; }
         public ICollection<ExpectedRevenues> ExpectedRevenues { get; set; }

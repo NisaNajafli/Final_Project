@@ -15,8 +15,8 @@ namespace Application.DTOs.BudgetDto
         public decimal TaxAmount { get; set; }
         //public List<ExpectedExpenses>? ExpectedExpenses { get; set; }
         //public List<ExpectedRevenues>? ExpectedRevenues { get; set; }
-        public decimal? TotalExpenses { get; }
-        public decimal? TotalRevenues { get;}
+        public decimal? TotalExpenses { get; set; }
+        public decimal? TotalRevenues { get; set; }
         //public decimal TotalRevenues
         //{
         //    get

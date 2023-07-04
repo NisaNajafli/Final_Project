@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.TaskDto
 {
-    public class UpdateTask
+    public class GetTaskDto
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        public int ProjectId { get; set; }
+        public List<int> EmployeeIds { get; set; }
     }
 }

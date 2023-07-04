@@ -11,7 +11,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+   // [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class ExpectedRevenuesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -24,21 +24,33 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<ExpectedRevenues> revenues = await _unitOfWork.ExpectedRevenuesRepository.GetAllAsync(null, "Budget");
+            List<GetRevenuesDto> revenuesDtos = new List<GetRevenuesDto>();
+            foreach (ExpectedRevenues revenue in revenues)
             {
-                return StatusCode(200, await _unitOfWork.ExpectedRevenuesRepository.GetAllAsync());
+                revenuesDtos.Add(new GetRevenuesDto()
+                {
+                    Id = revenue.Id,
+                    BudgetId = revenue.BudgetId,
+                    Amount = revenue.Amount,
+                    Title = revenue.Title,
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(revenuesDtos);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            ExpectedRevenues revenues = await _unitOfWork.ExpectedRevenuesRepository.GetById(id);
-            if (revenues == null) return StatusCode(404);
-            return Ok(revenues);
+            ExpectedRevenues revenue = await _unitOfWork.ExpectedRevenuesRepository.GetById(id);
+            if (revenue == null) return StatusCode(404);
+            GetRevenuesDto getRevenuesDtos = new GetRevenuesDto()
+            {
+                Id = revenue.Id,
+                BudgetId = revenue.BudgetId,
+                Amount = revenue.Amount,
+                Title = revenue.Title,
+            };
+            return Ok(getRevenuesDtos);
         }
         [HttpPost]
         public async Task<IActionResult> CreateExpense([FromForm] CreateExpectedRevenues revenuedto)

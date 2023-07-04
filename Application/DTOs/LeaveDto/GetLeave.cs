@@ -17,5 +17,6 @@ namespace Application.DTOs.LeaveDto
         public string Reason { get; set; }
         public LeaveStatus Status { get; set; }
         public int EmployeeId { get; set; }
+        public string LeaveName { get; set; }
     }
 }

@@ -11,7 +11,6 @@ namespace Application.DTOs.BudgetExpensesDto
 {
     public class UpdateBudgetExpenses
     {
-        public int Id { get; set; }
         public decimal Amount { get; set; }
         public string Notes { get; set; }
         public DateTime ExpenseDate { get; set; }

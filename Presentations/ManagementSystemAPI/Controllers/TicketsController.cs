@@ -7,7 +7,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin,Employee", AuthenticationSchemes = "Bearer")]
     public class TicketsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

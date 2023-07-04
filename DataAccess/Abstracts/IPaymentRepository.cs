@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstracts
 {
-    public interface IPaymentReposıtory:IRepository<Payment>
+    public interface IPaymentRepository:IRepository<Payment>
     {
-        Task<IEnumerable<Payment>> GetAllPaymentsForEmployee(int empId);
+        Task<IEnumerable<Payment>> GetAllPaymentsForEmployee(int empId, string include = null);
         Task<Tuple<decimal, decimal>> GetYtdPay(int empId);
     }
 }

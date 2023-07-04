@@ -14,9 +14,9 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Client> builder)
         {
             builder.Property(c => c.IsDeleted).HasDefaultValue(false);
-            builder.Property(c => c.IsActive).HasDefaultValue(true);
-            builder.HasMany(c => c.Tasks).WithOne(c=>c.Client).HasForeignKey(c=>c.ClientId).OnDelete(DeleteBehavior.SetNull);
+            builder.Property(c => c.IsActive).HasDefaultValue(true);;
             builder.HasMany(c=>c.Projects).WithOne(c=>c.Client).HasForeignKey(c=>c.ClientId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(c=>c.Company).WithMany(c=>c.Clients).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 

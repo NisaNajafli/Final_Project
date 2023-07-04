@@ -16,8 +16,8 @@ namespace DataAccess.Configurations
         {
             builder.ConfigureBaseEntity();
             builder.Property(c => c.Name).IsRequired();
-            builder.HasMany(c => c.Employees).WithOne(c=>c.Company).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(c => c.Clients).WithOne(c => c.Company).HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.Employees).WithOne(c=>c.Company).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(c => c.Clients).WithOne(c => c.Company).HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

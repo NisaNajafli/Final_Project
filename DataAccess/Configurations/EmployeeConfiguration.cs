@@ -17,9 +17,9 @@ namespace DataAccess.Configurations
             builder.Property(c=>c.IsActive).HasDefaultValue(true);
             builder.HasMany(c => c.Tasks).WithMany(c => c.Employees);
             builder.HasMany(c=>c.Tickets).WithOne(c=>c.Employee).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(c => c.Leaves).WithOne(c=>c.Employee).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.Leaves).WithOne(c=>c.Employee).HasForeignKey(c=>c.EmployeeId).OnDelete(DeleteBehavior.SetNull);
             builder.HasMany(c => c.Attendances).WithOne(c => c.Employee).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e=>e.Company).WithMany(e=>e.Employees).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(e=>e.Company).WithMany(e=>e.Employees).HasForeignKey(c=>c.CompanyId).OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(c => c.Payments).WithOne(c => c.Employee).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.Restrict);
 
         }

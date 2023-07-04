@@ -5,4 +5,5 @@ namespace DataAccess.Abstracts;
 public interface IAzureFileService
 {
     public  Task<string> UploadAsync(IFormFile blob);
+    public Task DeleteAsync(string blobUri);
 }

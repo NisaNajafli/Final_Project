@@ -10,7 +10,7 @@ namespace ManagementSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles = "Admin", AuthenticationSchemes = "Bearer")]
     public class DesignationController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,24 +21,36 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Designation> designations = await _unitOfWork.DesignationReposittory.GetAllAsync(null, "Department");
+            List<GetDesignationDto> designationsdto = new List<GetDesignationDto>();
+            foreach (Designation designation in designations)
             {
-                return StatusCode(200, await _unitOfWork.DesignationReposittory.GetAllAsync(null,"Department"));
+                designationsdto.Add(new GetDesignationDto()
+                {
+                    Id=designation.Id,
+                    Name= designation.Name,
+                    DepartmentName=designation.Department.Name,
+                    DepartmentId=designation.Department.Id,
+                });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(designationsdto);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            Designation designation = await _unitOfWork.DesignationReposittory.GetById(id);
+            Designation designation = _unitOfWork.DesignationReposittory.Get("Department").FirstOrDefault(c=>c.Id==id);
             if (designation == null)
             {
                 return StatusCode(404);
             }
-            return Ok(designation);
+            GetDesignationDto designationDto = new GetDesignationDto()
+            {
+                Id = designation.Id,
+                Name = designation.Name,
+                DepartmentName = designation.Department.Name,
+                DepartmentId = designation.Department.Id,
+            };
+            return Ok(designationDto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateDesignation([FromForm] CreateDesignation designationdto)
@@ -76,7 +88,7 @@ namespace ManagementSystemAPI.Controllers
             designation.DepartmentId = designationdto.DepartmentId;
             _unitOfWork.DesignationReposittory.Update(designation, id);
             await _unitOfWork.Commit();
-            return Ok(designation);
+            return StatusCode(201);
         }
 
     }
