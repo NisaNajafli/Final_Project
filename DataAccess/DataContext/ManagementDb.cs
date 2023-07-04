@@ -32,8 +32,7 @@ namespace DataAccess.DataContext
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<LeaveType> LeaveTypes { get; set; }
         public DbSet<Leave> Leaves { get; set; }
-        public DbSet<Tax> Taxs { get; set; }
-        public DbSet<Information> Informations { get; set; }
+        public DbSet<Tax> Taxes { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

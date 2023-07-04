@@ -7,8 +7,9 @@ using static DataAccess.Entities.Tax;
 
 namespace Application.DTOs.TAxDto
 {
-    public class UpdateTAx
+    public class GetTaxDto
     {
+        public int Id { get; set; }
         public string TaxName { get; set; }
         public double Percentange { get; set; }
         public StatusType Status { get; set; }

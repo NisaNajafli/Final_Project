@@ -1,4 +1,5 @@
-﻿using Application.DTOs.TAxDto;
+﻿using Application.DTOs.DepartmentDto;
+using Application.DTOs.TAxDto;
 using Application.Services.Abstracts;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -23,21 +24,35 @@ namespace ManagementSystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
+            List<Tax> taxes = await _unitOfWork.TaxRepository.GetAllAsync();
+            List<GetTaxDto> taxDtos = new List<GetTaxDto>();
+            foreach (Tax tax in taxes)
             {
-                return StatusCode(200, await _unitOfWork.TaxRepository.GetAllAsync());
+                taxDtos.Add(new GetTaxDto()
+                {
+                    Id = tax.Id,
+                    TaxName=tax.TaxName,
+                    Percentange=tax.Percentange,
+                    Status=tax.Status,
+
+                });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(taxDtos);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             Tax tax = await _unitOfWork.TaxRepository.GetById(id);
             if (tax == null) return StatusCode(404);
-            return Ok(tax);
+            GetTaxDto taxDtos = new GetTaxDto()
+            {
+                Id = tax.Id,
+                TaxName = tax.TaxName,
+                Percentange = tax.Percentange,
+                Status = tax.Status,
+
+            };
+            return Ok(taxDtos);
         }
         [HttpPost]
         public async Task<IActionResult> CreateTax([FromForm] CreateTax taxdto)
@@ -50,7 +65,7 @@ namespace ManagementSystemAPI.Controllers
             };
             _unitOfWork.TaxRepository.Create(tax);
             await _unitOfWork.Commit();
-            return StatusCode(201, tax);
+            return StatusCode(201);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTax([FromRoute] int id)
@@ -71,7 +86,7 @@ namespace ManagementSystemAPI.Controllers
             tax.Percentange = taxdto.Percentange;
             _unitOfWork.TaxRepository.Update(tax,id);
             await _unitOfWork.Commit();
-            return StatusCode(200,tax);
+            return StatusCode(200);
         }
     }
 }
